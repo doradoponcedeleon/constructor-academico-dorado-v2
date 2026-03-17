@@ -13,6 +13,16 @@ const CAD_PANELES = [
   "panelCitasAPA",
   "panelAsistenteRedaccion",
   "panelTesis",
+  "panelMarcoTeorico",
+  "panelEstadoArte",
+  "panelVacios",
+  "panelHipotesis",
+  "panelTemas",
+  "panelTendencias",
+  "panelMetodologia",
+  "panelArticulo",
+  "panelHub",
+  "panelDashboard",
   "panelRevision",
   "panelLegal",
   "panelSyncGithub"
@@ -73,6 +83,46 @@ function renderPanel(panelId) {
     if (typeof renderTesis === "function") return renderTesis();
   }
 
+  if (panelId === "panelMarcoTeorico") {
+    if (typeof renderMarcoTeorico === "function") return renderMarcoTeorico();
+  }
+
+  if (panelId === "panelEstadoArte") {
+    if (typeof renderEstadoArte === "function") return renderEstadoArte();
+  }
+
+  if (panelId === "panelVacios") {
+    if (typeof renderVaciosInvestigacion === "function") return renderVaciosInvestigacion();
+  }
+
+  if (panelId === "panelHipotesis") {
+    if (typeof renderHipotesis === "function") return renderHipotesis();
+  }
+
+  if (panelId === "panelTemas") {
+    if (typeof renderTemasInvestigacion === "function") return renderTemasInvestigacion();
+  }
+
+  if (panelId === "panelTendencias") {
+    if (typeof renderTendenciasCientificas === "function") return renderTendenciasCientificas();
+  }
+
+  if (panelId === "panelMetodologia") {
+    if (typeof renderMetodologia === "function") return renderMetodologia();
+  }
+
+  if (panelId === "panelArticulo") {
+    if (typeof renderArticuloCientifico === "function") return renderArticuloCientifico();
+  }
+
+  if (panelId === "panelHub") {
+    if (typeof renderHubInvestigacion === "function") return renderHubInvestigacion();
+  }
+
+  if (panelId === "panelDashboard") {
+    if (typeof renderDashboard === "function") return renderDashboard();
+  }
+
   if (panelId === "panelRevision") {
     if (typeof renderRevision === "function") return renderRevision();
   }
@@ -118,6 +168,46 @@ function renderPanel(panelId) {
     panelTesis: {
       titulo: "Generador de tesis",
       descripcion: "Estructura base de tesis completa"
+    },
+    panelMarcoTeorico: {
+      titulo: "Marco Teórico",
+      descripcion: "Generación automática del marco teórico"
+    },
+    panelEstadoArte: {
+      titulo: "Estado del Arte",
+      descripcion: "Síntesis académica de la literatura"
+    },
+    panelVacios: {
+      titulo: "Vacíos de investigación",
+      descripcion: "Detección de vacíos y oportunidades"
+    },
+    panelHipotesis: {
+      titulo: "Hipótesis",
+      descripcion: "Generación de hipótesis académicas"
+    },
+    panelTemas: {
+      titulo: "Temas de investigación",
+      descripcion: "Propuestas de temas emergentes"
+    },
+    panelTendencias: {
+      titulo: "Tendencias científicas",
+      descripcion: "Análisis de tendencias en literatura"
+    },
+    panelMetodologia: {
+      titulo: "Metodología",
+      descripcion: "Diseño metodológico de investigación"
+    },
+    panelArticulo: {
+      titulo: "Artículo científico",
+      descripcion: "Generador de artículo académico"
+    },
+    panelHub: {
+      titulo: "Hub de investigación",
+      descripcion: "Centro unificado de análisis y síntesis"
+    },
+    panelDashboard: {
+      titulo: "Dashboard",
+      descripcion: "Resumen general del proyecto"
     }
   };
 
