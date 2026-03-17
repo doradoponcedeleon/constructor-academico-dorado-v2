@@ -24,6 +24,7 @@ body {
     radial-gradient(900px 500px at 90% 5%, rgba(109, 209, 199, 0.12), transparent 55%),
     linear-gradient(180deg, #0a0d12 0%, #0b0f16 100%);
   min-height: 100vh;
+  overflow-x: hidden;
 }
 
 .topbar {
@@ -50,22 +51,22 @@ h1 {
 
 .layout {
   display: grid;
-  grid-template-columns: 240px 1fr;
+  grid-template-columns: 260px minmax(0, 1fr);
   gap: 22px;
   padding: 26px 28px 40px;
+  height: calc(100vh - 88px);
 }
 
 .sidebar {
   position: sticky;
   top: 88px;
-  align-self: start;
   background: var(--panel);
   border: 1px solid var(--border);
   border-radius: var(--radius-lg);
   padding: 16px;
   box-shadow: var(--shadow);
-  max-height: calc(100vh - 120px);
-  overflow: auto;
+  height: calc(100vh - 120px);
+  overflow-y: auto;
 }
 
 .sidebar-title {
@@ -106,11 +107,14 @@ h1 {
   padding: 18px;
   box-shadow: var(--shadow);
   min-height: 60vh;
+  min-width: 0;
+  overflow: auto;
 }
 
 .panel-contenido {
   display: grid;
   gap: 16px;
+  min-width: 0;
 }
 
 .modulo-card {
@@ -242,22 +246,22 @@ textarea {
 
 @media (max-width: 1000px) {
   .layout {
-    grid-template-columns: 1fr;
-  }
-
-  .sidebar {
-    position: relative;
-    top: 0;
-    max-height: none;
+    grid-template-columns: 220px minmax(0, 1fr);
   }
 }
 
 @media (max-width: 640px) {
   .layout {
     padding: 18px 16px 28px;
+    grid-template-columns: 1fr;
+    height: auto;
   }
 
   .workspace {
     padding: 14px;
+  }
+  .sidebar {
+    position: static;
+    height: auto;
   }
 }
