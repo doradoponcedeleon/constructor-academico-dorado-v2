@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Checklist de Pruebas · Plataforma Modular Académica</title>
+  <style>
+    :root{
+      --bg:#0f1116;
+      --card:#151a22;
+      --text:#e6e6e6;
+      --muted:#9aa4b2;
+      --accent:#d4af37;
+      --line:#232a36;
+      --ok:#2ecc71;
+      --warn:#f1c40f;
+      --err:#e74c3c;
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      font-family:Arial, Helvetica, sans-serif;
+      background:var(--bg);
+      color:var(--text);
+      line-height:1.6;
+    }
+    header{
+      padding:24px 20px;
+      border-bottom:1px solid var(--line);
+      background:linear-gradient(180deg,#111622,#0f1116);
+    }
+    h1{margin:0 0 6px 0;font-size:24px}
+    .subtitle{color:var(--muted)}
+    main{max-width:900px;margin:0 auto;padding:24px 20px}
+    .card{
+      background:var(--card);
+      border:1px solid var(--line);
+      border-radius:12px;
+      padding:20px;
+      margin:16px 0;
+    }
+    .tag{display:inline-block;padding:2px 8px;border:1px solid var(--line);border-radius:999px;color:var(--muted);font-size:12px}
+    .checklist li{margin:8px 0}
+    a{color:var(--accent);text-decoration:none}
+    a:hover{text-decoration:underline}
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Checklist de Pruebas</h1>
+    <div class="subtitle">Constructor Académico Dorado · Plataforma Modular</div>
+  </header>
+  <main>
+    <div class="card">
+      <a href="manual-pruebas.html" class="tag">Volver al Manual de Pruebas</a>
+    </div>
+
+    <div class="card">
+      <h2>Checklist General</h2>
+      <ul class="checklist">
+        <li>[ ] Motor Ideas genera documento_base</li>
+        <li>[ ] Preview de Motor Ideas se muestra</li>
+        <li>[ ] Aplicar al editor sincroniza secciones</li>
+        <li>[ ] Motor Paper genera paper_base</li>
+        <li>[ ] Motor Paper envía al editor</li>
+        <li>[ ] Referencias APA agrega y edita</li>
+        <li>[ ] Insertar referencias crea sección en Editor</li>
+        <li>[ ] Buscador Papers agrega a referencias</li>
+        <li>[ ] Citas APA guarda en referencias</li>
+        <li>[ ] Asistente Redacción modifica sección</li>
+        <li>[ ] Generador Tesis crea tesis_base</li>
+        <li>[ ] Tesis se envía al editor</li>
+        <li>[ ] Exportación PDF funciona</li>
+        <li>[ ] Router navega sin errores</li>
+      </ul>
+    </div>
+
+    <div class="card">
+      <h2>Checklist de Persistencia</h2>
+      <ul class="checklist">
+        <li>[ ] Documento base persiste tras recarga</li>
+        <li>[ ] Paper base persiste tras recarga</li>
+        <li>[ ] Tesis base persiste tras recarga</li>
+        <li>[ ] Referencias persisten</li>
+      </ul>
+    </div>
+
+    <div class="card">
+      <h2>Checklist de UX</h2>
+      <ul class="checklist">
+        <li>[ ] Mensajes de estado visibles</li>
+        <li>[ ] No hay alertas innecesarias</li>
+        <li>[ ] Preview seguro (sin HTML ejecutable)</li>
+      </ul>
+    </div>
+  </main>
+</body>
+</html>

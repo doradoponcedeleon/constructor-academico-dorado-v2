@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Documento Maestro · Plataforma</title>
+  <style>
+    :root {
+      --bg: #0c0f14;
+      --panel: #121826;
+      --panel-soft: #1a2233;
+      --text: #e9eef5;
+      --muted: #9aa6b5;
+      --accent: #f2c869;
+      --border: rgba(255, 255, 255, 0.08);
+      --radius: 16px;
+    }
+    body {
+      margin: 0;
+      font-family: "Segoe UI", sans-serif;
+      background: #0c0f14;
+      color: #e9eef5;
+      line-height: 1.6;
+    }
+    header {
+      padding: 48px 24px 32px;
+      text-align: center;
+      background: radial-gradient(800px 400px at 50% -20%, rgba(242, 200, 105, 0.2), transparent 60%);
+      border-bottom: 1px solid var(--border);
+    }
+    header h1 { margin: 0; font-size: 1.8rem; color: var(--accent); }
+    header p { margin: 8px 0 0; color: var(--muted); }
+    main {
+      max-width: 960px;
+      margin: 0 auto;
+      padding: 32px 20px 60px;
+      display: grid;
+      gap: 24px;
+    }
+    section {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 24px;
+    }
+    h2 { color: var(--accent); margin-top: 0; }
+    ul { margin: 0; padding-left: 18px; color: var(--muted); }
+    a { color: #e9eef5; text-decoration: none; }
+    a:hover { text-decoration: underline; }
+    @media (max-width: 640px) {
+      header { padding: 36px 18px 24px; }
+      main { padding: 24px 16px 40px; }
+      section { padding: 18px; }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Plataforma Constructor Académico Dorado</h1>
+    <p>Documento maestro de arquitectura y visión modular</p>
+  </header>
+
+  <main>
+    <section>
+      <h2>Portada</h2>
+      <p>La plataforma es la base profesional consolidada del Constructor Académico Dorado. Su propósito es integrar los módulos académicos en una arquitectura escalable.</p>
+    </section>
+
+    <section>
+      <h2>Índice</h2>
+      <ul>
+        <li>Visión general</li>
+        <li>Arquitectura modular</li>
+        <li>Módulos principales</li>
+        <li>Flujo del usuario</li>
+        <li>Flujo técnico</li>
+        <li>Estrategia y evolución</li>
+      </ul>
+    </section>
+
+    <section>
+      <h2>Visión general</h2>
+      <p>La plataforma representa la consolidación de todas las versiones anteriores en un solo entorno modular con shell central, router interno y estado global.</p>
+    </section>
+
+    <section>
+      <h2>Arquitectura modular</h2>
+      <p>Se organiza por dominios: core, editor, referencias, figuras, tablas, biblioteca, versiones, exportadores, motor de ideas, revisión, legal y sync-github.</p>
+    </section>
+
+    <section>
+      <h2>Módulos</h2>
+      <ul>
+        <li>Core: configuración, esquema y utilidades</li>
+        <li>Editor: secciones y bloques académicos</li>
+        <li>Referencias: citas y bibliografía</li>
+        <li>Figuras: carga y galería</li>
+        <li>Tablas: builder y renderer</li>
+        <li>Biblioteca: documentos locales</li>
+        <li>Versiones: historial y snapshots</li>
+        <li>Exportadores: PDF, DOCX, HTML, TXT, JSON</li>
+        <li>Motor de ideas: generación de contenido</li>
+        <li>Revisión: validación académica</li>
+        <li>Legal: control de fuentes y atribuciones</li>
+        <li>Sync GitHub: sincronización externa</li>
+      </ul>
+    </section>
+
+    <section>
+      <h2>Flujo del usuario</h2>
+      <p>El usuario navega por módulos desde el sidebar, genera contenido, edita, guarda y exporta documentos con una experiencia integrada.</p>
+    </section>
+
+    <section>
+      <h2>Flujo técnico</h2>
+      <p>El core controla el estado, cada módulo renderiza su panel y el router gestiona la navegación. La persistencia local y exportadores son servicios transversales.</p>
+    </section>
+
+    <section>
+      <h2>Estrategia y evolución futura</h2>
+      <p>La plataforma está preparada para integrar sincronización remota, colaboración y mejoras académicas avanzadas sin romper la modularidad.</p>
+    </section>
+  </main>
+</body>
+</html>

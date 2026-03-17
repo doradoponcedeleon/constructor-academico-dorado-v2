@@ -1,0 +1,64 @@
+function renderMarcoTeorico() {
+  const cont = document.getElementById("panelContenido");
+  if (!cont) return;
+
+  cont.innerHTML = `
+    <div class="modulo-card">
+      <h2>Generador de Marco Teórico</h2>
+      <p>Genera un marco teórico completo desde referencias guardadas.</p>
+      <div class="bitacora-form">
+        <button id="btnGenerarMarcoTeorico" class="btn">Generar marco teórico</button>
+        <button id="btnEnviarMarcoTeorico" class="btn">Enviar al editor</button>
+      </div>
+      <div id="estadoMarcoTeorico" class="card"></div>
+      <div id="resultadoMarcoTeorico" class="card"></div>
+    </div>
+  `;
+
+  const estado = cont.querySelector("#estadoMarcoTeorico");
+  const resultado = cont.querySelector("#resultadoMarcoTeorico");
+  const setEstado = (msg, type) => window.setEstado(estado, msg, type);
+
+  const renderPreview = (texto) => {
+    const safe = (texto || "").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+    if (resultado) resultado.innerHTML = `<pre>${safe}</pre>`;
+  };
+
+  cont.querySelector("#btnGenerarMarcoTeorico").addEventListener("click", () => {
+    const refs = typeof safeGetJSON === "function" ? safeGetJSON("referencias", []) : [];
+    if (!refs.length) {
+      setEstado("No hay referencias guardadas", "estado-warn");
+    }
+    const texto = generarMarcoTeorico(refs);
+    localStorage.setItem("marco_teorico", texto);
+    renderPreview(texto);
+    setEstado("Marco teórico generado", "estado-ok");
+  });
+
+  cont.querySelector("#btnEnviarMarcoTeorico").addEventListener("click", () => {
+    const texto = localStorage.getItem("marco_teorico") || "";
+    if (!texto) {
+      setEstado("Genera el marco teórico primero", "estado-warn");
+      return;
+    }
+    localStorage.setItem("documento_base", texto);
+    if (typeof window.sincronizarEditorConDocumentoBase === "function") {
+      window.sincronizarEditorConDocumentoBase(texto);
+      setEstado("Enviado al editor", "estado-ok");
+      return;
+    }
+    if (typeof window.sincronizarEditorConPaper === "function") {
+      window.sincronizarEditorConPaper(texto);
+      setEstado("Enviado al editor", "estado-ok");
+      return;
+    }
+    setEstado("No se pudo sincronizar con el editor", "estado-error");
+  });
+
+  const prev = localStorage.getItem("marco_teorico");
+  if (prev) renderPreview(prev);
+}
+
+function initMarcoTeorico() {
+  renderMarcoTeorico();
+}

@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Manual de Usuario · Plataforma Modular Académica</title>
+  <style>
+    :root{
+      --bg:#0f1116;
+      --card:#151a22;
+      --text:#e6e6e6;
+      --muted:#9aa4b2;
+      --accent:#d4af37;
+      --line:#232a36;
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      font-family:Arial, Helvetica, sans-serif;
+      background:var(--bg);
+      color:var(--text);
+      line-height:1.6;
+    }
+    header{
+      padding:32px 20px;
+      border-bottom:1px solid var(--line);
+      background:linear-gradient(180deg,#111622,#0f1116);
+    }
+    h1{margin:0 0 6px 0;font-size:28px}
+    .subtitle{color:var(--muted)}
+    main{max-width:980px;margin:0 auto;padding:24px 20px}
+    .card{
+      background:var(--card);
+      border:1px solid var(--line);
+      border-radius:12px;
+      padding:20px;
+      margin:16px 0;
+    }
+    .toc a{color:var(--accent);text-decoration:none}
+    .toc a:hover{text-decoration:underline}
+    .step{padding:12px;border-left:3px solid var(--accent);background:#121826;margin:10px 0}
+    code{background:#111722;padding:2px 6px;border-radius:6px}
+    ul{padding-left:18px}
+    .tag{display:inline-block;padding:2px 8px;border:1px solid var(--line);border-radius:999px;color:var(--muted);font-size:12px}
+    .grid{
+      display:grid;
+      grid-template-columns:repeat(auto-fit,minmax(240px,1fr));
+      gap:12px;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Manual de Usuario · Plataforma Modular Académica</h1>
+    <div class="subtitle">Constructor Académico Dorado — Guía paso a paso</div>
+  </header>
+  <main>
+    <div class="card toc">
+      <h2>Índice</h2>
+      <ul>
+        <li><a href="#inicio">Inicio rápido</a></li>
+        <li><a href="#navegacion">Navegación general</a></li>
+        <li><a href="#motor-ideas">Motor de Ideas</a></li>
+        <li><a href="#editor">Editor Académico</a></li>
+        <li><a href="#motor-paper">Motor Paper</a></li>
+        <li><a href="#referencias">Referencias APA</a></li>
+        <li><a href="#buscador">Buscador Papers</a></li>
+        <li><a href="#citas">Citas APA</a></li>
+        <li><a href="#asistente">Asistente de Redacción</a></li>
+        <li><a href="#tesis">Generador de Tesis</a></li>
+        <li><a href="#exportadores">Exportadores</a></li>
+        <li><a href="#buenas">Buenas prácticas</a></li>
+        <li><a href="#problemas">Solución de problemas</a></li>
+      </ul>
+    </div>
+
+    <section id="inicio" class="card">
+      <h2>Inicio rápido</h2>
+      <div class="step">1. Abre la plataforma desde el navegador.</div>
+      <div class="step">2. En el panel lateral, entra a <strong>Motor de ideas</strong> y crea un documento base.</div>
+      <div class="step">3. Presiona <strong>Aplicar al editor</strong> para cargarlo en el Editor.</div>
+      <div class="step">4. Ajusta secciones en <strong>Editor</strong>.</div>
+      <div class="step">5. Exporta en <strong>Exportadores</strong> o genera un paper/tesis.</div>
+    </section>
+
+    <section id="navegacion" class="card">
+      <h2>Navegación general</h2>
+      <p>La plataforma tiene un <strong>panel lateral</strong> con módulos. Cada botón abre un panel en el área principal.</p>
+      <div class="grid">
+        <div class="card">
+          <div class="tag">Editor</div>
+          <p>Gestiona secciones académicas y contenido.</p>
+        </div>
+        <div class="card">
+          <div class="tag">Motor de ideas</div>
+          <p>Genera un documento base en Markdown.</p>
+        </div>
+        <div class="card">
+          <div class="tag">Motor Paper / Tesis</div>
+          <p>Genera estructuras académicas avanzadas.</p>
+        </div>
+      </div>
+    </section>
+
+    <section id="motor-ideas" class="card">
+      <h2>Motor de Ideas</h2>
+      <p>Convierte ideas en un documento base estructurado.</p>
+      <div class="step">1. Ingresa <code>Problema</code>, <code>Ideas</code>, <code>Conceptos</code> y <code>Objetivos</code>.</div>
+      <div class="step">2. Presiona <strong>Generar documento base</strong>.</div>
+      <div class="step">3. Revisa el preview (Markdown).</div>
+      <div class="step">4. Pulsa <strong>Aplicar al editor</strong> para transferirlo.</div>
+      <p>El documento se guarda en <code>localStorage.documento_base</code>.</p>
+    </section>
+
+    <section id="editor" class="card">
+      <h2>Editor Académico</h2>
+      <p>Gestiona secciones del documento académico.</p>
+      <div class="step">1. Abre <strong>Editor</strong> desde el panel lateral.</div>
+      <div class="step">2. Edita títulos y contenido.</div>
+      <div class="step">3. Agrega o elimina secciones.</div>
+      <div class="step">4. Usa <strong>Guardar editor</strong> para persistencia.</div>
+    </section>
+
+    <section id="motor-paper" class="card">
+      <h2>Motor Paper</h2>
+      <p>Genera un paper académico a partir de <code>documento_base</code>.</p>
+      <div class="step">1. Escribe Título, Autores y Área académica.</div>
+      <div class="step">2. Pulsa <strong>Generar paper</strong>.</div>
+      <div class="step">3. Revisa el preview.</div>
+      <div class="step">4. Usa <strong>Enviar al editor</strong>.</div>
+    </section>
+
+    <section id="referencias" class="card">
+      <h2>Referencias APA</h2>
+      <p>Guarda referencias y genera formato APA.</p>
+      <div class="step">1. Ingresa Autor(es), Año, Título, Revista/Libro, Editorial y DOI/URL.</div>
+      <div class="step">2. Pulsa <strong>Agregar referencia</strong>.</div>
+      <div class="step">3. Usa <strong>Insertar en documento</strong> para agregarlas al final del Editor.</div>
+    </section>
+
+    <section id="buscador" class="card">
+      <h2>Buscador Papers</h2>
+      <p>Búsqueda simulada con resultados realistas.</p>
+      <div class="step">1. Escribe tema y opcionalmente autor/año.</div>
+      <div class="step">2. Presiona <strong>Buscar papers</strong>.</div>
+      <div class="step">3. Usa <strong>Agregar a referencias</strong> en un resultado.</div>
+    </section>
+
+    <section id="citas" class="card">
+      <h2>Citas APA</h2>
+      <p>Genera citas APA rápidas.</p>
+      <div class="step">1. Completa el formulario de cita.</div>
+      <div class="step">2. Presiona <strong>Generar cita APA</strong>.</div>
+      <div class="step">3. Guarda en referencias si lo necesitas.</div>
+    </section>
+
+    <section id="asistente" class="card">
+      <h2>Asistente de Redacción</h2>
+      <p>Mejora o transforma texto académico.</p>
+      <div class="step">1. Selecciona una sección.</div>
+      <div class="step">2. Usa las opciones: Mejorar, Resumir, Ampliar, Formalizar.</div>
+      <div class="step">3. Presiona <strong>Aplicar al editor</strong>.</div>
+    </section>
+
+    <section id="tesis" class="card">
+      <h2>Generador de Tesis</h2>
+      <p>Crea una estructura completa de tesis con datos de base.</p>
+      <div class="step">1. Completa Título, Autor, Carrera, Universidad y Línea.</div>
+      <div class="step">2. Pulsa <strong>Generar tesis</strong>.</div>
+      <div class="step">3. Usa <strong>Enviar al editor</strong> para transferirla.</div>
+    </section>
+
+    <section id="exportadores" class="card">
+      <h2>Exportadores</h2>
+      <p>Exporta el documento en varios formatos.</p>
+      <div class="step">1. Entra a <strong>Exportadores</strong>.</div>
+      <div class="step">2. Elige PDF, DOCX, HTML, TXT o JSON.</div>
+      <div class="step">3. Descarga el archivo generado.</div>
+    </section>
+
+    <section id="buenas" class="card">
+      <h2>Buenas prácticas</h2>
+      <ul>
+        <li>Guarda referencias antes de exportar.</li>
+        <li>Revisa el preview antes de aplicar al editor.</li>
+        <li>Actualiza secciones de forma progresiva.</li>
+      </ul>
+    </section>
+
+    <section id="problemas" class="card">
+      <h2>Solución de problemas</h2>
+      <ul>
+        <li><strong>No se ve un módulo:</strong> revisa la navegación lateral.</li>
+        <li><strong>No se carga el preview:</strong> revisa que el contenido exista en localStorage.</li>
+        <li><strong>Exportación PDF falla:</strong> confirma que jsPDF está cargado.</li>
+      </ul>
+    </section>
+  </main>
+</body>
+</html>

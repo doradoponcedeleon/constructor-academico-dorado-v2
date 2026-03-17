@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Manual de Pruebas · Plataforma Modular Académica</title>
+  <style>
+    :root{
+      --bg:#0f1116;
+      --card:#151a22;
+      --text:#e6e6e6;
+      --muted:#9aa4b2;
+      --accent:#d4af37;
+      --line:#232a36;
+      --ok:#2ecc71;
+      --warn:#f1c40f;
+      --err:#e74c3c;
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      font-family:Arial, Helvetica, sans-serif;
+      background:var(--bg);
+      color:var(--text);
+      line-height:1.6;
+    }
+    header{
+      padding:32px 20px;
+      border-bottom:1px solid var(--line);
+      background:linear-gradient(180deg,#111622,#0f1116);
+    }
+    h1{margin:0 0 6px 0;font-size:28px}
+    .subtitle{color:var(--muted)}
+    main{max-width:1100px;margin:0 auto;padding:24px 20px}
+    .card{
+      background:var(--card);
+      border:1px solid var(--line);
+      border-radius:12px;
+      padding:20px;
+      margin:16px 0;
+    }
+    .toc a{color:var(--accent);text-decoration:none}
+    .toc a:hover{text-decoration:underline}
+    .step{padding:12px;border-left:3px solid var(--accent);background:#121826;margin:10px 0}
+    code{background:#111722;padding:2px 6px;border-radius:6px}
+    ul{padding-left:18px}
+    .tag{display:inline-block;padding:2px 8px;border:1px solid var(--line);border-radius:999px;color:var(--muted);font-size:12px}
+    .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:12px}
+    .ok{color:var(--ok)}
+    .warn{color:var(--warn)}
+    .err{color:var(--err)}
+    .checklist li{margin:6px 0}
+    .badge{display:inline-block;padding:2px 6px;border-radius:6px;font-size:12px;margin-left:6px}
+    .b-ok{background:rgba(46,204,113,.15);color:var(--ok)}
+    .b-warn{background:rgba(241,196,15,.15);color:var(--warn)}
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Manual de Pruebas · Plataforma Modular Académica</h1>
+    <div class="subtitle">Constructor Académico Dorado — Guía de validación completa</div>
+  </header>
+  <main>
+    <div class="card toc">
+      <h2>Índice</h2>
+      <ul>
+        <li><a href="#preparacion">Preparación</a></li>
+        <li><a href="#navegacion">Navegación general</a></li>
+        <li><a href="#motor-ideas">Pruebas: Motor de Ideas</a></li>
+        <li><a href="#editor">Pruebas: Editor</a></li>
+        <li><a href="#motor-paper">Pruebas: Motor Paper</a></li>
+        <li><a href="#referencias">Pruebas: Referencias APA</a></li>
+        <li><a href="#buscador">Pruebas: Buscador Papers</a></li>
+        <li><a href="#citas">Pruebas: Citas APA</a></li>
+        <li><a href="#asistente">Pruebas: Asistente de Redacción</a></li>
+        <li><a href="#tesis">Pruebas: Generador de Tesis</a></li>
+        <li><a href="#exportadores">Pruebas: Exportadores</a></li>
+        <li><a href="#persistencia">Pruebas: Persistencia</a></li>
+        <li><a href="#debug">Modo diagnóstico</a></li>
+        <li><a href="#criterios">Criterios de aceptación</a></li>
+      </ul>
+    </div>
+
+    <section id="preparacion" class="card">
+      <h2>Preparación</h2>
+      <ul class="checklist">
+        <li>Abrir la plataforma en navegador.</li>
+        <li>Limpiar estado si es necesario: borrar <code>localStorage</code> o usar el botón de limpieza si existe.</li>
+        <li>Activar consola para ver logs: <span class="tag">CADDebug</span></li>
+      </ul>
+    </section>
+
+    <section id="navegacion" class="card">
+      <h2>Navegación general</h2>
+      <div class="step">1. Cambia entre módulos en el panel lateral.</div>
+      <div class="step">2. Verifica que el panel principal cambia y no queda en blanco.</div>
+      <p class="ok">Resultado esperado: navegación fluida, sin errores.</p>
+    </section>
+
+    <section id="motor-ideas" class="card">
+      <h2>Pruebas: Motor de Ideas</h2>
+      <div class="step">1. Escribe en Problema, Ideas, Conceptos y Objetivos.</div>
+      <div class="step">2. Pulsa <strong>Generar documento base</strong>.</div>
+      <div class="step">3. Verifica preview en <code>resultadoMotor</code>.</div>
+      <div class="step">4. Pulsa <strong>Aplicar al editor</strong>.</div>
+      <p class="ok">Resultado esperado: documento guardado en <code>localStorage.documento_base</code>.</p>
+    </section>
+
+    <section id="editor" class="card">
+      <h2>Pruebas: Editor</h2>
+      <div class="step">1. Abrir Editor desde el menú.</div>
+      <div class="step">2. Verifica que aparecen secciones creadas desde el motor de ideas.</div>
+      <div class="step">3. Editar contenido y guardar.</div>
+      <p class="ok">Resultado esperado: secciones persistentes en CADState y localStorage.</p>
+    </section>
+
+    <section id="motor-paper" class="card">
+      <h2>Pruebas: Motor Paper</h2>
+      <div class="step">1. Completa Título, Autores y Área.</div>
+      <div class="step">2. Pulsa <strong>Generar paper</strong>.</div>
+      <div class="step">3. Verifica preview y guardado en <code>localStorage.paper_base</code>.</div>
+      <div class="step">4. Pulsa <strong>Enviar al editor</strong>.</div>
+      <p class="ok">Resultado esperado: paper visible en editor.</p>
+    </section>
+
+    <section id="referencias" class="card">
+      <h2>Pruebas: Referencias APA</h2>
+      <div class="step">1. Agrega referencia completa.</div>
+      <div class="step">2. Edita la referencia directamente en la lista.</div>
+      <div class="step">3. Pulsa <strong>Insertar en documento</strong>.</div>
+      <p class="ok">Resultado esperado: sección “Referencias” en editor.</p>
+    </section>
+
+    <section id="buscador" class="card">
+      <h2>Pruebas: Buscador Papers</h2>
+      <div class="step">1. Escribe un tema y busca.</div>
+      <div class="step">2. Agrega un resultado a referencias.</div>
+      <p class="ok">Resultado esperado: referencia agregada en módulo de referencias.</p>
+    </section>
+
+    <section id="citas" class="card">
+      <h2>Pruebas: Citas APA</h2>
+      <div class="step">1. Completar el formulario.</div>
+      <div class="step">2. Generar cita APA.</div>
+      <div class="step">3. Guardar en referencias.</div>
+      <p class="ok">Resultado esperado: referencia en la lista APA.</p>
+    </section>
+
+    <section id="asistente" class="card">
+      <h2>Pruebas: Asistente de Redacción</h2>
+      <div class="step">1. Seleccionar sección del editor.</div>
+      <div class="step">2. Usar botones de mejora o resumen.</div>
+      <div class="step">3. Aplicar al editor.</div>
+      <p class="ok">Resultado esperado: texto actualizado en la sección.</p>
+    </section>
+
+    <section id="tesis" class="card">
+      <h2>Pruebas: Generador de Tesis</h2>
+      <div class="step">1. Completa campos de tesis.</div>
+      <div class="step">2. Genera tesis y revisa preview.</div>
+      <div class="step">3. Envía al editor.</div>
+      <p class="ok">Resultado esperado: estructura de tesis completa en editor.</p>
+    </section>
+
+    <section id="exportadores" class="card">
+      <h2>Pruebas: Exportadores</h2>
+      <div class="step">1. Generar documento en editor.</div>
+      <div class="step">2. Exportar PDF.</div>
+      <div class="step">3. Verificar que se descargue correctamente.</div>
+      <p class="ok">Resultado esperado: archivo PDF con título y secciones.</p>
+    </section>
+
+    <section id="persistencia" class="card">
+      <h2>Pruebas: Persistencia</h2>
+      <div class="step">1. Genera documento base y paper.</div>
+      <div class="step">2. Recarga la página.</div>
+      <div class="step">3. Verifica preview persistente en Motor Ideas y Motor Paper.</div>
+      <p class="ok">Resultado esperado: contenidos restaurados.</p>
+    </section>
+
+    <section id="debug" class="card">
+      <h2>Modo diagnóstico</h2>
+      <p>Activa el modo de diagnóstico con:</p>
+      <pre><code>window.CADDebug = true;</code></pre>
+      <p>Revisa la consola para mensajes con el prefijo <code>[CAD]</code>.</p>
+    </section>
+
+    <section id="criterios" class="card">
+      <h2>Criterios de aceptación</h2>
+      <ul class="checklist">
+        <li>Motor Ideas genera documento_base y preview.</li>
+        <li>Editor sincroniza secciones correctamente.</li>
+        <li>Motor Paper genera paper_base y envía al editor.</li>
+        <li>Referencias se insertan en el editor.</li>
+        <li>Buscador Papers agrega resultados a referencias.</li>
+        <li>Citas APA guarda correctamente.</li>
+        <li>Asistente modifica secciones.</li>
+        <li>Tesis genera documento completo y lo envía al editor.</li>
+        <li>Exportación PDF funciona sin errores.</li>
+      </ul>
+      <div class="step">
+        <a href="checklist-pruebas.html" class="tag">Abrir Checklist de Pruebas</a>
+      </div>
+    </section>
+  </main>
+</body>
+</html>

@@ -1,0 +1,9 @@
+#resultadoMotor pre {
+  background:#111;
+  color:#ddd;
+  padding:16px;
+  border-radius:8px;
+  overflow-x:auto;
+  font-size:13px;
+  line-height:1.5;
+}

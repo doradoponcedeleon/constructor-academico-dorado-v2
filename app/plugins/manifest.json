@@ -1,0 +1,7 @@
+{
+  "plugins": [
+    "plugins/ia-redactor/index.js",
+    "plugins/latex-exporter/index.js",
+    "plugins/citas-apa/index.js"
+  ]
+}
