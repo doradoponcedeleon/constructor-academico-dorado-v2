@@ -70,12 +70,40 @@ function renderCitasAPA() {
       url: "#citaDoi"
     };
     console.log("APA SELECTORS:", selectors);
-    const autor = (cont.querySelector(selectors.autor)?.value || "").trim();
-    const anio = (cont.querySelector(selectors.anio)?.value || "").trim();
-    const titulo = (cont.querySelector(selectors.titulo)?.value || "").trim();
-    const revista = (cont.querySelector(selectors.fuente)?.value || "").trim();
-    const editorial = (cont.querySelector(selectors.editorial)?.value || "").trim();
-    const doi = (cont.querySelector(selectors.url)?.value || "").trim();
+    const logInputs = (root, label) => {
+      const inputs = root.querySelectorAll("input, textarea");
+      console.log(`APA INPUTS SCAN (${label}):`);
+      inputs.forEach((el) => {
+        console.log(el.placeholder, el.id, el.name, el.value);
+      });
+      return inputs;
+    };
+
+    const scopedInputs = logInputs(cont, "scoped");
+    let autor = (cont.querySelector(selectors.autor)?.value || "").trim();
+    let anio = (cont.querySelector(selectors.anio)?.value || "").trim();
+    let titulo = (cont.querySelector(selectors.titulo)?.value || "").trim();
+    let revista = (cont.querySelector(selectors.fuente)?.value || "").trim();
+    let editorial = (cont.querySelector(selectors.editorial)?.value || "").trim();
+    let doi = (cont.querySelector(selectors.url)?.value || "").trim();
+
+    if (!autor || !anio || !titulo) {
+      const allInputs = logInputs(document, "global");
+      allInputs.forEach((el) => {
+        const ph = (el.placeholder || "").toLowerCase();
+        const name = (el.name || "").toLowerCase();
+        const id = (el.id || "").toLowerCase();
+        const value = (el.value || "").trim();
+        if (!value) return;
+        if (!autor && (ph.includes("autor") || name.includes("autor") || id.includes("autor"))) autor = value;
+        if (!anio && (ph.includes("año") || ph.includes("anio") || name.includes("anio") || id.includes("anio"))) anio = value;
+        if (!titulo && (ph.includes("título") || ph.includes("titulo") || name.includes("titulo") || id.includes("titulo"))) titulo = value;
+        if (!revista && (ph.includes("revista") || ph.includes("libro") || ph.includes("sitio") || name.includes("fuente") || id.includes("fuente"))) revista = value;
+        if (!editorial && (ph.includes("editorial") || name.includes("editorial") || id.includes("editorial"))) editorial = value;
+        if (!doi && (ph.includes("doi") || ph.includes("url") || name.includes("doi") || id.includes("doi"))) doi = value;
+      });
+    }
+
     return { autor, anio, titulo, revista, editorial, doi };
   };
 
