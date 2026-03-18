@@ -1,11 +1,16 @@
 function generarCitaAPARapida(ref) {
   if (typeof generarReferenciaAPA === "function") return generarReferenciaAPA(ref);
-  const autor = ref.authors || ref.autor || "Autor";
-  const anio = ref.year || ref.anio || "s.f.";
-  const titulo = ref.title || ref.titulo || "Título";
-  const fuente = ref.source || ref.revista || ref.fuente || "";
-  const url = ref.url || ref.doi || "";
-  const finalFuente = [fuente, url].filter(Boolean).join(". ");
+  const autorRaw = (ref.autor || ref.authors || "").trim();
+  const anioRaw = (ref.anio || ref.year || "").trim();
+  const tituloRaw = (ref.titulo || ref.title || "").trim();
+  const fuenteRaw = (ref.revista || ref.source || ref.fuente || "").trim();
+  const editorialRaw = (ref.editorial || "").trim();
+  const urlRaw = (ref.doi || ref.url || "").trim();
+  const autor = autorRaw || "Autor";
+  const anio = anioRaw || "s.f.";
+  const titulo = tituloRaw || "Título";
+  const fuente = [fuenteRaw, editorialRaw].filter(Boolean).join(". ");
+  const finalFuente = [fuente, urlRaw].filter(Boolean).join(". ");
   return `${autor} (${anio}). ${titulo}. ${finalFuente}`.trim();
 }
 
@@ -67,7 +72,16 @@ function renderCitasAPA() {
   cont.querySelector("#btnGenerarCita").addEventListener("click", () => {
     setEstado("Generando...", "estado-warn");
     const ref = construirRef();
+    console.log("APA INPUT VALUES:", {
+      autor: ref.autor,
+      anio: ref.anio,
+      titulo: ref.titulo,
+      fuente: ref.revista,
+      editorial: ref.editorial,
+      url: ref.doi
+    });
     const cita = generarCitaAPARapida(ref);
+    console.log("APA OUTPUT:", cita);
     const safe = cita.replace(/</g, "&lt;").replace(/>/g, "&gt;");
     if (preview) preview.innerHTML = `<pre>${safe}</pre>`;
     setEstado("Guardado correctamente", "estado-ok");
