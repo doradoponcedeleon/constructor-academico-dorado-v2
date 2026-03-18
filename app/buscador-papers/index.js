@@ -70,8 +70,10 @@ function renderBuscadorPapers() {
         } else {
           safeSetJSON("referencias", lista);
         }
+        console.log("REFERENCIAS KEY:", "referencias");
+        console.log("REFERENCIAS FOUND:", lista.length);
         console.log("REFERENCIAS:", lista);
-        setEstado("Referencia agregada", "estado-ok");
+        setEstado("Referencia agregada correctamente", "estado-ok");
       });
     });
 

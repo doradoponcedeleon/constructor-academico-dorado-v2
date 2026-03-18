@@ -202,13 +202,7 @@ function construirReferenciaDesdePaper(paper) {
     authors: paper.autores || "",
     year: paper.anio || "",
     source: paper.fuente || "",
-    url: paper.url || paper.doi || "",
-    autor: paper.autores || "",
-    anio: paper.anio || "",
-    titulo: paper.titulo || "",
-    revista: paper.fuente || "",
-    editorial: "",
-    doi: paper.doi || paper.url || ""
+    url: paper.url || paper.doi || ""
   };
 }
 

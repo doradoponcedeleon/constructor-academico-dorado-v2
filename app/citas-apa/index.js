@@ -45,6 +45,7 @@ function renderCitasAPA() {
         <button id="btnGuardarCita" class="btn">Guardar en referencias</button>
         <button id="btnGenerarCitasRef" class="btn">Generar citas desde referencias</button>
       </div>
+      <div id="debugCitas" class="card"></div>
       <div id="estadoCitas" class="card"></div>
       <div id="previewCita" class="card"></div>
     </div>
@@ -52,6 +53,7 @@ function renderCitasAPA() {
 
   const preview = cont.querySelector("#previewCita");
   const estado = cont.querySelector("#estadoCitas");
+  const debugBox = cont.querySelector("#debugCitas");
   const setEstado = (msg, type) => window.setEstado(estado, msg, type);
 
   const construirRef = () => ({
@@ -88,7 +90,12 @@ function renderCitasAPA() {
     setEstado("Generando...", "estado-warn");
     try {
       const refs = safeGetJSON("referencias", []);
+      console.log("REFERENCIAS KEY:", "referencias");
+      console.log("REFERENCIAS FOUND:", refs.length);
       console.log("REFERENCIAS:", refs);
+      if (debugBox) {
+        debugBox.textContent = `Referencias cargadas: ${refs.length}. Generación: ejecutada.`;
+      }
       if (!refs.length) {
         if (preview) preview.innerHTML = "<p class=\"muted\">No hay referencias disponibles</p>";
         setEstado("No hay referencias disponibles", "estado-warn");
@@ -96,6 +103,7 @@ function renderCitasAPA() {
       }
       const citas = refs.map((ref) => generarCitaAPARapida(ref));
       localStorage.setItem("citas_apa", JSON.stringify(citas));
+      console.log("APA GENERATED:", citas.length);
       console.log("APA GENERADAS:", citas);
       const safe = citas.join("\n").replace(/</g, "&lt;").replace(/>/g, "&gt;");
       if (preview) preview.innerHTML = `<pre>${safe}</pre>`;

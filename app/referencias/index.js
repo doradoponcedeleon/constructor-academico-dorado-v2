@@ -10,7 +10,13 @@ function obtenerReferenciasPlataforma() {
 }
 
 function guardarReferenciasPlataforma(lista) {
-  const data = Array.isArray(lista) ? lista : [];
+  const data = (Array.isArray(lista) ? lista : []).map((ref) => ({
+    title: ref.title || ref.titulo || "",
+    authors: ref.authors || ref.autor || "",
+    year: ref.year || ref.anio || "",
+    source: ref.source || ref.revista || "",
+    url: ref.url || ref.doi || ""
+  }));
   localStorage.setItem("referencias", JSON.stringify(data));
   if (window.CADState) {
     window.CADState.referencias = data;
@@ -30,40 +36,26 @@ function normalizarAutoresAPA(autoresRaw) {
 }
 
 function generarReferenciaAPA(ref) {
-  const autor = normalizarAutoresAPA(ref.autor || "");
-  const anio = ref.anio || "s.f.";
-  const titulo = ref.titulo || "Título";
-  const revista = ref.revista || "";
-  const editorial = ref.editorial || "";
-  const doi = ref.doi || "";
-
-  const fuente = [revista, editorial, doi].filter(Boolean).join(", ");
-  return `${autor} (${anio}). ${titulo}. ${fuente}`.trim();
+  const autor = normalizarAutoresAPA(ref.authors || "");
+  const anio = ref.year || "s.f.";
+  const titulo = ref.title || "Título";
+  const fuente = ref.source || "";
+  const url = ref.url || "";
+  const finalFuente = [fuente, url].filter(Boolean).join(". ");
+  return `${autor} (${anio}). ${titulo}. ${finalFuente}`.trim();
 }
 
 function agregarReferenciaPlataforma() {
-  const autor = document.getElementById("refAutor")?.value.trim() || "";
-  const anio = document.getElementById("refAnio")?.value.trim() || "";
-  const titulo = document.getElementById("refTitulo")?.value.trim() || "";
-  const revista = document.getElementById("refRevista")?.value.trim() || "";
-  const editorial = document.getElementById("refEditorial")?.value.trim() || "";
-  const doi = document.getElementById("refDoi")?.value.trim() || "";
+  const authors = document.getElementById("refAutor")?.value.trim() || "";
+  const year = document.getElementById("refAnio")?.value.trim() || "";
+  const title = document.getElementById("refTitulo")?.value.trim() || "";
+  const source = document.getElementById("refRevista")?.value.trim() || "";
+  const url = document.getElementById("refDoi")?.value.trim() || "";
 
-  if (!autor && !titulo) return;
+  if (!authors && !title) return;
 
   const lista = obtenerReferenciasPlataforma();
-  lista.unshift({
-    title: titulo,
-    authors: autor,
-    year: anio,
-    source: revista,
-    autor,
-    anio,
-    titulo,
-    revista,
-    editorial,
-    doi
-  });
+  lista.unshift({ title, authors, year, source, url });
   guardarReferenciasPlataforma(lista);
   renderReferencias();
   console.log("REFERENCIAS:", lista);
@@ -159,12 +151,12 @@ function renderReferencias() {
       const card = document.createElement("div");
       card.className = "card";
       card.innerHTML = `
-        <input class="input" data-index="${index}" data-field="autor" value="${ref.autor || ""}" placeholder="Autor(es)" />
-        <input class="input" data-index="${index}" data-field="anio" value="${ref.anio || ""}" placeholder="Año" />
-        <input class="input" data-index="${index}" data-field="titulo" value="${ref.titulo || ""}" placeholder="Título" />
-        <input class="input" data-index="${index}" data-field="revista" value="${ref.revista || ""}" placeholder="Revista / Libro" />
-        <input class="input" data-index="${index}" data-field="editorial" value="${ref.editorial || ""}" placeholder="Editorial" />
-        <input class="input" data-index="${index}" data-field="doi" value="${ref.doi || ""}" placeholder="DOI / URL" />
+        <input class="input" data-index="${index}" data-field="authors" value="${ref.authors || ""}" placeholder="Autor(es)" />
+        <input class="input" data-index="${index}" data-field="year" value="${ref.year || ""}" placeholder="Año" />
+        <input class="input" data-index="${index}" data-field="title" value="${ref.title || ""}" placeholder="Título" />
+        <input class="input" data-index="${index}" data-field="source" value="${ref.source || ""}" placeholder="Revista / Libro" />
+        <input class="input" data-index="${index}" data-field="editorial" value="" placeholder="Editorial (no persistente)" />
+        <input class="input" data-index="${index}" data-field="url" value="${ref.url || ""}" placeholder="DOI / URL" />
         <p class="muted">${generarReferenciaAPA(ref)}</p>
         <div class="button-row">
           <button class="btn btn-peligro" data-index="${index}">Eliminar</button>
