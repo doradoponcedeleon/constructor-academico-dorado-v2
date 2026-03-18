@@ -52,9 +52,21 @@ function agregarReferenciaPlataforma() {
   if (!autor && !titulo) return;
 
   const lista = obtenerReferenciasPlataforma();
-  lista.unshift({ autor, anio, titulo, revista, editorial, doi });
+  lista.unshift({
+    title: titulo,
+    authors: autor,
+    year: anio,
+    source: revista,
+    autor,
+    anio,
+    titulo,
+    revista,
+    editorial,
+    doi
+  });
   guardarReferenciasPlataforma(lista);
   renderReferencias();
+  console.log("REFERENCIAS:", lista);
 
   const ids = ["refAutor", "refAnio", "refTitulo", "refRevista", "refEditorial", "refDoi"];
   ids.forEach((id) => {
@@ -101,6 +113,14 @@ function insertarReferenciasEnDocumento() {
   }
 }
 
+function generarCitasAPADesdeReferencias() {
+  const lista = obtenerReferenciasPlataforma();
+  const citas = lista.map((r) => generarReferenciaAPA(r));
+  localStorage.setItem("citas_apa", JSON.stringify(citas));
+  console.log("APA:", citas);
+  return citas;
+}
+
 function renderReferencias() {
   const cont = document.getElementById("panelContenido");
   if (!cont) return;
@@ -121,7 +141,13 @@ function renderReferencias() {
         <button id="btnAgregarReferencia" class="btn">Agregar referencia</button>
         <button id="btnInsertarReferencias" class="btn">Insertar en documento</button>
       </div>
+      <div id="estadoReferencias" class="card"></div>
       <div id="listaReferencias"></div>
+      <div class="card">
+        <h3>Citas APA</h3>
+        <button id="btnGenerarCitasAPA" class="btn">Generar citas APA</button>
+        <div id="listaCitasAPA" class="muted"></div>
+      </div>
     </div>
   `;
 
@@ -165,8 +191,35 @@ function renderReferencias() {
     });
   }
 
-  cont.querySelector("#btnAgregarReferencia").addEventListener("click", agregarReferenciaPlataforma);
+  const estado = cont.querySelector("#estadoReferencias");
+  const setEstado = (msg, type) => window.setEstado(estado, msg, type);
+
+  cont.querySelector("#btnAgregarReferencia").addEventListener("click", () => {
+    agregarReferenciaPlataforma();
+    setEstado("Referencia agregada", "estado-ok");
+  });
   cont.querySelector("#btnInsertarReferencias").addEventListener("click", insertarReferenciasEnDocumento);
+
+  const btnCitas = cont.querySelector("#btnGenerarCitasAPA");
+  const listaCitas = cont.querySelector("#listaCitasAPA");
+  if (btnCitas) {
+    btnCitas.addEventListener("click", () => {
+      const citas = generarCitasAPADesdeReferencias();
+      if (listaCitas) {
+        if (!citas.length) {
+          listaCitas.textContent = "Sin referencias para citar.";
+        } else {
+          listaCitas.innerHTML = `<pre>${escapeHTML(citas.join("\n"))}</pre>`;
+        }
+      }
+      setEstado("Citas APA generadas", "estado-ok");
+    });
+  }
+
+  const prevCitas = safeGetJSON("citas_apa", []);
+  if (listaCitas && prevCitas.length) {
+    listaCitas.innerHTML = `<pre>${escapeHTML(prevCitas.join("\n"))}</pre>`;
+  }
 }
 
 function initReferencias() {

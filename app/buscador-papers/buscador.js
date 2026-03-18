@@ -59,6 +59,69 @@ function buscarPapersDemo(query) {
       fuente: "Tecnología y Sociedad",
       doi: "10.1000/tys.2018.078",
       url: "https://example.com/paper5"
+    },
+    {
+      titulo: "Analítica del aprendizaje y rendimiento académico",
+      autores: "Suárez, D.; Molina, V.",
+      anio: "2023",
+      resumen: "Uso de analítica del aprendizaje para predecir rendimiento en cursos en línea.",
+      fuente: "Revista de Educación Digital",
+      doi: "10.1000/red.2023.003",
+      url: "https://example.com/paper6"
+    },
+    {
+      titulo: "Internet de las cosas en entornos industriales",
+      autores: "Ortega, H.; Salas, K.",
+      anio: "2022",
+      resumen: "Arquitecturas IoT para monitoreo de procesos industriales en tiempo real.",
+      fuente: "Ingeniería Industrial",
+      doi: "10.1000/ii.2022.042",
+      url: "https://example.com/paper7"
+    },
+    {
+      titulo: "Ciberseguridad y gestión de riesgos en la nube",
+      autores: "Quispe, J.; León, A.",
+      anio: "2020",
+      resumen: "Modelo de gestión de riesgos para infraestructuras cloud en PYMES.",
+      fuente: "Seguridad Informática",
+      doi: "10.1000/si.2020.088",
+      url: "https://example.com/paper8"
+    },
+    {
+      titulo: "Análisis de sentimientos en redes sociales",
+      autores: "Reyes, S.; Villarroel, T.",
+      anio: "2019",
+      resumen: "Comparación de técnicas de NLP para análisis de sentimientos en Twitter.",
+      fuente: "Lenguaje y Computación",
+      doi: "10.1000/lc.2019.021",
+      url: "https://example.com/paper9"
+    },
+    {
+      titulo: "Sistemas recomendadores en comercio electrónico",
+      autores: "Navarro, G.; Pinto, R.",
+      anio: "2021",
+      resumen: "Impacto de sistemas recomendadores en la conversión de ventas online.",
+      fuente: "Comercio Digital",
+      doi: "10.1000/cd.2021.014",
+      url: "https://example.com/paper10"
+    },
+    {
+      titulo: "Procesamiento de lenguaje natural para salud mental",
+      autores: "Díaz, M.; Flores, C.",
+      anio: "2024",
+      resumen: "Detección temprana de síntomas mediante análisis de texto clínico.",
+      fuente: "Salud Digital",
+      doi: "10.1000/sd.2024.002",
+      url: "https://example.com/paper11"
+    },
+    {
+      titulo: "Optimización energética en smart cities",
+      autores: "Valdez, P.; Ríos, J.",
+      anio: "2020",
+      resumen: "Estrategias de optimización energética con sensores urbanos.",
+      fuente: "Ciudades Inteligentes",
+      doi: "10.1000/ci.2020.077",
+      url: "https://example.com/paper12"
     }
   ];
 
@@ -135,6 +198,10 @@ async function buscarPapersSemanticScholarProxy(query, limit = 8) {
 
 function construirReferenciaDesdePaper(paper) {
   return {
+    title: paper.titulo || "",
+    authors: paper.autores || "",
+    year: paper.anio || "",
+    source: paper.fuente || "",
     autor: paper.autores || "",
     anio: paper.anio || "",
     titulo: paper.titulo || "",
