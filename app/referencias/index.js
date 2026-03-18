@@ -90,7 +90,7 @@ function limpiarReferenciasPlataforma() {
     CADCore.storage.guardarEstadoLocal(window.CADState);
   }
   console.log("REFERENCIAS CLEARED");
-  console.log("REFERENCIAS CURRENT:", []);
+  console.log("REFERENCIAS AFTER CLEAR:", localStorage.getItem("referencias"));
   renderReferencias();
 }
 
@@ -217,12 +217,12 @@ function renderReferencias() {
       const citas = generarCitasAPADesdeReferencias();
       if (listaCitas) {
         if (!citas.length) {
-          listaCitas.textContent = "Sin referencias para citar.";
+          listaCitas.textContent = "No hay referencias disponibles";
         } else {
           listaCitas.innerHTML = `<pre>${escapeHTML(citas.join("\n"))}</pre>`;
         }
       }
-      setEstado("Citas APA generadas", "estado-ok");
+      setEstado(citas.length ? "Citas APA generadas" : "No hay referencias disponibles", citas.length ? "estado-ok" : "estado-warn");
     });
   }
 
