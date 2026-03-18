@@ -185,26 +185,28 @@ function renderCitasAPA() {
 
   cont.querySelector("#btn-generar-apa").addEventListener("click", () => {
     setEstado("Generando...", "estado-warn");
-    const ref = construirRef();
     console.log("APA BUTTON CLICKED");
-    console.log("APA INPUT VALUES:", {
-      autor: ref.autor,
-      anio: ref.anio,
-      titulo: ref.titulo,
-      fuente: ref.revista,
-      editorial: ref.editorial,
-      url: ref.doi
-    });
+    const read = (sel) => ((cont.querySelector(sel) || document.querySelector(sel))?.value || "").trim();
+    const autor = read("#apa-autor");
+    const anio = read("#apa-anio");
+    const titulo = read("#apa-titulo");
+    const fuente = read("#apa-fuente");
+    const editorial = read("#apa-editorial");
+    const url = read("#apa-url");
+    console.log("APA FORM VALUES:", { autor, anio, titulo, fuente, editorial, url });
     if (debugValores) {
       debugValores.innerHTML = `
-        <p>autor leído: ${ref.autor || ""}</p>
-        <p>anio leído: ${ref.anio || ""}</p>
-        <p>titulo leído: ${ref.titulo || ""}</p>
-        <p>fuente leída: ${ref.revista || ""}</p>
-        <p>url leída: ${ref.doi || ""}</p>
+        <p>autor leído: ${autor || ""}</p>
+        <p>anio leído: ${anio || ""}</p>
+        <p>titulo leído: ${titulo || ""}</p>
+        <p>fuente leída: ${fuente || ""}</p>
+        <p>url leída: ${url || ""}</p>
       `;
     }
-    const cita = generarCitaDesdeInputs(ref);
+    const cita = `${autor || "Autor"}. (${anio || "s.f."}). ${titulo || "Título"}.` +
+      (fuente ? ` ${fuente}.` : "") +
+      (editorial ? ` ${editorial}.` : "") +
+      (url ? ` ${url}` : "");
     console.log("APA OUTPUT:", cita);
     const safe = cita.replace(/</g, "&lt;").replace(/>/g, "&gt;");
     if (preview) preview.innerHTML = `<pre>${safe}</pre>`;
