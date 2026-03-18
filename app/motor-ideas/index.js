@@ -27,6 +27,40 @@ function extraerSeccionesDesdeMarkdown(doc) {
 }
 
 function sincronizarEditorConDocumentoBase(doc) {
+  let documento = doc;
+  if (typeof doc === "string") {
+    try {
+      const parsed = JSON.parse(doc);
+      if (parsed && typeof parsed === "object") documento = parsed;
+    } catch (e) {
+      documento = doc;
+    }
+  }
+
+  if (documento && typeof documento === "object" && !documento.raw) {
+    const secciones = window.documentoBaseToSecciones
+      ? window.documentoBaseToSecciones(documento)
+      : [];
+    if (window.CADState) {
+      if (!window.CADState.editor) window.CADState.editor = { secciones: [] };
+      window.CADState.editor.secciones = secciones.length
+        ? secciones
+        : [{ titulo: "Documento base", contenido: window.documentoBaseToMarkdown(documento) }];
+    }
+    if (window.PEditor) {
+      PEditor.sections.lista = window.CADState.editor.secciones;
+    }
+    if (window.PEditor?.renderer) {
+      const cont = document.getElementById("panelContenido");
+      if (cont) {
+        PEditor.renderer.render(cont, window.CADState.editor.secciones);
+      }
+    }
+    const markdown = window.documentoBaseToMarkdown ? window.documentoBaseToMarkdown(documento) : "";
+    if (markdown) localStorage.setItem("documento_editor", markdown);
+    return;
+  }
+
   const editor = document.getElementById("editor");
   const secciones = extraerSeccionesDesdeMarkdown(doc);
 
@@ -72,6 +106,7 @@ function sincronizarEditorConDocumentoBase(doc) {
       PEditor.renderer.render(cont, window.CADState.editor.secciones);
     }
   }
+  if (doc) localStorage.setItem("documento_editor", doc);
 }
 
 window.sincronizarEditorConDocumentoBase = sincronizarEditorConDocumentoBase;
@@ -89,21 +124,22 @@ function generarDocumento() {
 
   const data = {
     tema: (document.getElementById("miTema")?.value || "").trim(),
+    introduccion: ideas || conceptos || "",
     problema,
-    ideas,
-    conceptos,
     objetivos
   };
-
-  const resultado = generarDocumentoBasePlataforma(data);
-  const documento = resultado.markdown || "";
-
-  localStorage.setItem("documento_base", documento);
-  mostrarEstadoMotorIdeas("Documento base generado");
+  try {
+    mostrarEstadoMotorIdeas("Generando...");
+    localStorage.setItem("documento_base", JSON.stringify(data));
+    mostrarEstadoMotorIdeas("Guardado correctamente");
+  } catch (e) {
+    mostrarEstadoMotorIdeas("Error");
+  }
 
   const resultadoDiv = document.getElementById("resultadoMotor");
   if (resultadoDiv) {
-    const safeDoc = documento
+    const markdown = window.documentoBaseToMarkdown ? window.documentoBaseToMarkdown(data) : "";
+    const safeDoc = markdown
       .replace(/</g, "&lt;")
       .replace(/>/g, "&gt;");
     resultadoDiv.innerHTML = `<pre>${safeDoc}</pre>`;
@@ -111,7 +147,7 @@ function generarDocumento() {
     info.style.fontSize = "12px";
     info.style.opacity = "0.7";
     info.style.marginTop = "8px";
-    info.textContent = "Caracteres: " + documento.length;
+    info.textContent = "Caracteres: " + markdown.length;
     resultadoDiv.appendChild(info);
   }
 }
@@ -122,8 +158,13 @@ function aplicarEditor() {
     mostrarEstadoMotorIdeas("No existe contenido para aplicar");
     return;
   }
-  sincronizarEditorConDocumentoBase(doc);
-  mostrarEstadoMotorIdeas("Documento aplicado al editor");
+  mostrarEstadoMotorIdeas("Generando...");
+  try {
+    sincronizarEditorConDocumentoBase(doc);
+    mostrarEstadoMotorIdeas("Guardado correctamente");
+  } catch (e) {
+    mostrarEstadoMotorIdeas("Error");
+  }
 }
 
 function renderMotorIdeas() {
@@ -165,7 +206,14 @@ function renderMotorIdeas() {
   if (doc) {
     const resultadoDiv = document.getElementById("resultadoMotor");
     if (resultadoDiv) {
-      const safeDoc = doc
+      let preview = doc;
+      try {
+        const parsed = JSON.parse(doc);
+        preview = window.documentoBaseToMarkdown ? window.documentoBaseToMarkdown(parsed) : doc;
+      } catch (e) {
+        preview = doc;
+      }
+      const safeDoc = preview
         .replace(/</g, "&lt;")
         .replace(/>/g, "&gt;");
       resultadoDiv.innerHTML = `<pre>${safeDoc}</pre>`;

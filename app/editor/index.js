@@ -18,16 +18,32 @@ function renderEditor() {
   }
   PEditor.sections.lista = window.CADState.editor.secciones;
 
+  const docBase = window.parseDocumentoBase ? window.parseDocumentoBase() : null;
+  if (docBase && typeof window.documentoBaseToSecciones === "function") {
+    const seccionesBase = window.documentoBaseToSecciones(docBase);
+    if (seccionesBase.length) {
+      window.CADState.editor.secciones = seccionesBase;
+      PEditor.sections.lista = seccionesBase;
+    }
+  }
+
   PEditor.renderer.render(cont, PEditor.sections.lista);
+
+  const estado = cont.querySelector("#estadoEditor");
+  const setEstado = (msg, type) => window.setEstado(estado, msg, type);
+
+  if (docBase) {
+    const editorEl = cont.querySelector("#editor");
+    if (editorEl) {
+      const markdown = window.documentoBaseToMarkdown ? window.documentoBaseToMarkdown(docBase) : "";
+      editorEl.value = markdown;
+      if (markdown) localStorage.setItem("documento_editor", markdown);
+    }
+  }
 
   const paper = localStorage.getItem("paper_base");
   if (paper && typeof window.sincronizarEditorConPaper === "function") {
     window.sincronizarEditorConPaper(paper);
-  } else {
-    const doc = localStorage.getItem("documento_base");
-    if (doc && typeof window.sincronizarEditorConDocumentoBase === "function") {
-      window.sincronizarEditorConDocumentoBase(doc);
-    }
   }
 
   const btnAgregar = cont.querySelector("#btnAgregarSeccion");
@@ -61,10 +77,19 @@ function renderEditor() {
     el.addEventListener("input", () => {
       const index = parseInt(el.getAttribute("data-index"), 10);
       const field = el.getAttribute("data-field");
-      PEditor.sections.lista[index][field] = el.value;
-      window.CADState.editor.secciones = PEditor.sections.lista;
+      if (!Number.isNaN(index) && field) {
+        PEditor.sections.lista[index][field] = el.value;
+        window.CADState.editor.secciones = PEditor.sections.lista;
+      }
     });
   });
+
+  const editorBase = cont.querySelector("#editor");
+  if (editorBase) {
+    editorBase.addEventListener("input", () => {
+      setEstado("Editando...", "estado-warn");
+    });
+  }
 }
 
 function agregarSeccionEditor() {
@@ -80,9 +105,23 @@ function eliminarSeccionEditor(index) {
 }
 
 function guardarEditorLocal() {
+  const estado = document.getElementById("estadoEditor");
+  window.setEstado(estado, "Generando...", "estado-warn");
   PEditor.sections.guardar(PEditor.sections.lista);
   if (window.CADCore?.storage?.guardarEstadoLocal) {
     CADCore.storage.guardarEstadoLocal(window.CADState);
+  }
+  const editorEl = document.getElementById("editor");
+  const contenido = window.compilarDocumentoEditor
+    ? window.compilarDocumentoEditor(editorEl ? editorEl.value : "", PEditor.sections.lista)
+    : "";
+  try {
+    if (contenido) {
+      localStorage.setItem("documento_editor", contenido);
+    }
+    window.setEstado(estado, "Guardado correctamente", "estado-ok");
+  } catch (e) {
+    window.setEstado(estado, "Error", "estado-error");
   }
 }
 

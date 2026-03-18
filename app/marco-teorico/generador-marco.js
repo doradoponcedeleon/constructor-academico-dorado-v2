@@ -19,6 +19,10 @@ function generarCitaAPABasica(ref) {
 }
 
 function obtenerTemaInvestigacion() {
+  if (typeof window.parseDocumentoBase === "function") {
+    const doc = window.parseDocumentoBase();
+    if (doc && doc.tema) return doc.tema;
+  }
   try {
     const base = typeof safeGetJSON === "function" ? safeGetJSON("tesis_base", null) : null;
     if (base && base.tema) return base.tema;

@@ -25,14 +25,20 @@ function renderMarcoTeorico() {
   };
 
   cont.querySelector("#btnGenerarMarcoTeorico").addEventListener("click", () => {
+    setEstado("Generando...", "estado-warn");
     const refs = typeof safeGetJSON === "function" ? safeGetJSON("referencias", []) : [];
     if (!refs.length) {
       setEstado("No hay referencias guardadas", "estado-warn");
     }
-    const texto = generarMarcoTeorico(refs);
-    localStorage.setItem("marco_teorico", texto);
-    renderPreview(texto);
-    setEstado("Marco teórico generado", "estado-ok");
+    try {
+      const texto = generarMarcoTeorico(refs);
+      localStorage.setItem("marco_teorico", texto);
+      window.appendDocumentoEditor && window.appendDocumentoEditor(texto);
+      renderPreview(texto);
+      setEstado("Guardado correctamente", "estado-ok");
+    } catch (e) {
+      setEstado("Error", "estado-error");
+    }
   });
 
   cont.querySelector("#btnEnviarMarcoTeorico").addEventListener("click", () => {
@@ -41,18 +47,18 @@ function renderMarcoTeorico() {
       setEstado("Genera el marco teórico primero", "estado-warn");
       return;
     }
-    localStorage.setItem("documento_base", texto);
+    localStorage.setItem("documento_editor", window.appendDocumentoEditor ? window.appendDocumentoEditor(texto) : texto);
     if (typeof window.sincronizarEditorConDocumentoBase === "function") {
       window.sincronizarEditorConDocumentoBase(texto);
-      setEstado("Enviado al editor", "estado-ok");
+      setEstado("Guardado correctamente", "estado-ok");
       return;
     }
     if (typeof window.sincronizarEditorConPaper === "function") {
       window.sincronizarEditorConPaper(texto);
-      setEstado("Enviado al editor", "estado-ok");
+      setEstado("Guardado correctamente", "estado-ok");
       return;
     }
-    setEstado("No se pudo sincronizar con el editor", "estado-error");
+    setEstado("Error", "estado-error");
   });
 
   const prev = localStorage.getItem("marco_teorico");

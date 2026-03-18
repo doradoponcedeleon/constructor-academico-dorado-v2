@@ -13,6 +13,64 @@ function normalizarPaperSemanticScholar(item) {
   };
 }
 
+function buscarPapersDemo(query) {
+  const muestra = [
+    {
+      titulo: "Aprendizaje profundo aplicado a diagnóstico médico",
+      autores: "García, P.; Rojas, M.",
+      anio: "2021",
+      resumen: "Se analiza el desempeño de redes neuronales profundas para la detección temprana de enfermedades crónicas.",
+      fuente: "Revista Iberoamericana de IA",
+      doi: "10.1000/riia.2021.001",
+      url: "https://example.com/paper1"
+    },
+    {
+      titulo: "Modelos predictivos en educación superior",
+      autores: "López, A.; Fernández, J.",
+      anio: "2020",
+      resumen: "Estudio de modelos de predicción de deserción estudiantil usando datos institucionales.",
+      fuente: "Educación y Datos",
+      doi: "10.1000/eyd.2020.015",
+      url: "https://example.com/paper2"
+    },
+    {
+      titulo: "Estrategias de innovación en ingeniería de software",
+      autores: "Pérez, L.; Silva, R.",
+      anio: "2019",
+      resumen: "Revisión sistemática de prácticas de innovación y su impacto en equipos ágiles.",
+      fuente: "Ingeniería de Software Hoy",
+      doi: "10.1000/ish.2019.044",
+      url: "https://example.com/paper3"
+    },
+    {
+      titulo: "Tendencias en análisis de big data para salud pública",
+      autores: "Martínez, C.; Vega, N.",
+      anio: "2022",
+      resumen: "Panorama de aplicaciones de big data en vigilancia epidemiológica y toma de decisiones.",
+      fuente: "Salud y Ciencia",
+      doi: "10.1000/sc.2022.109",
+      url: "https://example.com/paper4"
+    },
+    {
+      titulo: "Ética y gobernanza de la inteligencia artificial",
+      autores: "Ramírez, F.; Torres, E.",
+      anio: "2018",
+      resumen: "Propuesta de marco ético para el desarrollo responsable de sistemas inteligentes.",
+      fuente: "Tecnología y Sociedad",
+      doi: "10.1000/tys.2018.078",
+      url: "https://example.com/paper5"
+    }
+  ];
+
+  const q = String(query || "").toLowerCase();
+  const filtrados = muestra.filter((p) =>
+    p.titulo.toLowerCase().includes(q) ||
+    p.autores.toLowerCase().includes(q) ||
+    p.resumen.toLowerCase().includes(q)
+  );
+  return { resultados: filtrados.length ? filtrados : muestra, fuente: "demo" };
+}
+
 async function fetchJsonConTimeout(url, options = {}, timeoutMs = 12000) {
   const controller = new AbortController();
   const timeout = setTimeout(() => controller.abort(), timeoutMs);

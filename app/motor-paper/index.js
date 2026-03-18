@@ -1,8 +1,17 @@
 function extraerDatosDesdeDocumentoBase() {
-  const doc = localStorage.getItem("documento_base") || "";
+  const doc = window.parseDocumentoBase ? window.parseDocumentoBase() : null;
+  if (doc && !doc.raw) {
+    return {
+      problema: doc.problema || "",
+      ideas: doc.introduccion || "",
+      conceptos: "",
+      objetivos: doc.objetivos || ""
+    };
+  }
+  const raw = localStorage.getItem("documento_base") || "";
   const getBlock = (titulo) => {
     const regex = new RegExp(`##\\s*${titulo}\\s*\\n([\\s\\S]*?)(?=\\n##\\s*|$)`, "i");
-    const match = doc.match(regex);
+    const match = raw.match(regex);
     return match ? match[1].trim() : "";
   };
   return {
@@ -75,6 +84,10 @@ function sincronizarEditorConPaper(paper, seccionesOverride) {
       PEditor.renderer.render(cont, window.CADState.editor.secciones);
     }
   }
+
+  if (paper) {
+    localStorage.setItem("documento_editor", paper);
+  }
 }
 
 window.sincronizarEditorConPaper = sincronizarEditorConPaper;
@@ -111,6 +124,7 @@ function renderMotorPaper() {
   const setEstado = (msg) => { if (estado) estado.textContent = msg; };
 
   cont.querySelector("#btnGenerarPaper").addEventListener("click", () => {
+    setEstado("Generando...");
     const dataBase = extraerDatosDesdeDocumentoBase();
     const data = {
       tema: (document.getElementById("paperTema")?.value || "").trim(),
@@ -121,27 +135,34 @@ function renderMotorPaper() {
     };
 
     const auto = !!document.getElementById("paperAutoToggle")?.checked;
-    if (auto) {
-      const resultadoAuto = generarPaperAutomatico(data);
-      const paper = resultadoAuto.markdown || "";
+    try {
+      if (auto) {
+        const resultadoAuto = generarPaperAutomatico(data);
+        const paper = resultadoAuto.markdown || "";
+        localStorage.setItem("paper_base", paper);
+        localStorage.setItem("paper_secciones", JSON.stringify(resultadoAuto.secciones || []));
+        window.appendDocumentoEditor && window.appendDocumentoEditor(paper);
+        setEstado("Guardado correctamente");
+        const safe = paper.replace(/</g, "&lt;").replace(/>/g, "&gt;");
+        if (resultado) resultado.innerHTML = `<pre>${safe}</pre>`;
+        return;
+      }
+
+      const paper = generarPaperAcademico(data);
       localStorage.setItem("paper_base", paper);
-      localStorage.setItem("paper_secciones", JSON.stringify(resultadoAuto.secciones || []));
-      setEstado("Paper automático generado");
+      localStorage.removeItem("paper_secciones");
+      window.appendDocumentoEditor && window.appendDocumentoEditor(paper);
+      setEstado("Guardado correctamente");
+
       const safe = paper.replace(/</g, "&lt;").replace(/>/g, "&gt;");
       if (resultado) resultado.innerHTML = `<pre>${safe}</pre>`;
-      return;
+    } catch (e) {
+      setEstado("Error");
     }
-
-    const paper = generarPaperAcademico(data);
-    localStorage.setItem("paper_base", paper);
-    localStorage.removeItem("paper_secciones");
-    setEstado("Paper generado");
-
-    const safe = paper.replace(/</g, "&lt;").replace(/>/g, "&gt;");
-    if (resultado) resultado.innerHTML = `<pre>${safe}</pre>`;
   });
 
   cont.querySelector("#btnEnviarPaper").addEventListener("click", () => {
+    setEstado("Generando...");
     const paper = localStorage.getItem("paper_base") || "";
     if (!paper) {
       setEstado("No existe paper para enviar");
@@ -156,15 +177,15 @@ function renderMotorPaper() {
     }
     if (typeof window.sincronizarEditorConPaper === "function") {
       window.sincronizarEditorConPaper(paper, secciones);
-      setEstado("Paper enviado al editor");
+      setEstado("Guardado correctamente");
       return;
     }
     if (typeof window.sincronizarEditorConDocumentoBase === "function") {
       window.sincronizarEditorConDocumentoBase(paper);
-      setEstado("Paper enviado al editor (compatibilidad)");
+      setEstado("Guardado correctamente");
       return;
     }
-    setEstado("No se pudo sincronizar con el editor");
+    setEstado("Error");
   });
 
   cont.querySelector("#btnLimpiarPaper").addEventListener("click", () => {

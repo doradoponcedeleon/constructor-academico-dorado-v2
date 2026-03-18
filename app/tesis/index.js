@@ -20,6 +20,7 @@ function renderTesis() {
         <input id="tesisLinea" type="text" placeholder="Línea de investigación" />
         <textarea id="tesisObjetivo" placeholder="Objetivo general"></textarea>
         <button id="btnGenerarTesis" class="btn">Generar tesis</button>
+        <button id="btnGenerarTesisCompleta" class="btn">Generar tesis completa</button>
         <button id="btnEnviarTesis" class="btn">Enviar al editor</button>
       </div>
       <div id="estadoTesis" class="card"></div>
@@ -31,7 +32,12 @@ function renderTesis() {
   const preview = cont.querySelector("#previewTesis");
 
   cont.querySelector("#btnGenerarTesis").addEventListener("click", () => {
-    const docBase = localStorage.getItem("documento_base") || "";
+    window.setEstado(estado, "Generando...", "estado-warn");
+    const docBaseRaw = localStorage.getItem("documento_base") || "";
+    const docBaseObj = window.parseDocumentoBase ? window.parseDocumentoBase() : null;
+    const docBaseMarkdown = window.documentoBaseToMarkdown
+      ? window.documentoBaseToMarkdown(docBaseObj)
+      : docBaseRaw;
     const paperBase = localStorage.getItem("paper_base") || "";
     const refs = safeGetJSON("referencias", []);
 
@@ -42,26 +48,49 @@ function renderTesis() {
       universidad: (document.getElementById("tesisUniversidad")?.value || "").trim(),
       linea: (document.getElementById("tesisLinea")?.value || "").trim(),
       resumen: extraerBloqueMarkdown(paperBase, "Resumen"),
-      introduccion: extraerBloqueMarkdown(docBase, "Problema"),
-      problema: extraerBloqueMarkdown(docBase, "Problema"),
+      introduccion: docBaseObj?.introduccion || extraerBloqueMarkdown(docBaseMarkdown, "Introducción"),
+      problema: docBaseObj?.problema || extraerBloqueMarkdown(docBaseMarkdown, "Problema"),
       justificacion: "Justificación derivada del documento base.",
-      objetivos: (document.getElementById("tesisObjetivo")?.value || "").trim() || extraerBloqueMarkdown(docBase, "Objetivos"),
-      marco: extraerBloqueMarkdown(docBase, "Conceptos clave"),
+      objetivos: (document.getElementById("tesisObjetivo")?.value || "").trim() || docBaseObj?.objetivos || extraerBloqueMarkdown(docBaseMarkdown, "Objetivos"),
+      marco: extraerBloqueMarkdown(docBaseMarkdown, "Conceptos clave"),
       metodologia: extraerBloqueMarkdown(paperBase, "Metodología"),
       resultados: "Resultados esperados según la línea de investigación.",
       discusion: "Discusión de aportes esperados.",
-      conclusiones: extraerBloqueMarkdown(docBase, "Ideas"),
+      conclusiones: extraerBloqueMarkdown(docBaseMarkdown, "Ideas"),
       recomendaciones: "Recomendaciones finales.",
       referencias: refs.map((r) => (typeof generarReferenciaAPA === "function" ? generarReferenciaAPA(r) : "")).join("\n"),
       anexos: "Anexos técnicos."
     };
 
-    const tesis = generarTesisAcademica(data);
-    localStorage.setItem("tesis_base", tesis);
-    window.setEstado(estado, "Tesis generada", "estado-ok");
+    try {
+      const tesis = generarTesisAcademica(data);
+      localStorage.setItem("tesis_base", tesis);
+      window.setEstado(estado, "Guardado correctamente", "estado-ok");
 
-    const safe = escapeHTML(tesis);
-    if (preview) preview.innerHTML = `<pre>${safe}</pre>`;
+      const safe = escapeHTML(tesis);
+      if (preview) preview.innerHTML = `<pre>${safe}</pre>`;
+    } catch (e) {
+      window.setEstado(estado, "Error", "estado-error");
+    }
+  });
+
+  cont.querySelector("#btnGenerarTesisCompleta").addEventListener("click", () => {
+    window.setEstado(estado, "Generando...", "estado-warn");
+    try {
+      const editorDoc = localStorage.getItem("documento_editor") || "";
+      const citas = safeGetJSON("citas_apa", []);
+      const contenido = [
+        "# Tesis completa",
+        editorDoc,
+        "## Referencias APA",
+        Array.isArray(citas) ? citas.join("\n") : ""
+      ].filter(Boolean).join("\n\n").trim();
+      localStorage.setItem("tesis_completa", contenido);
+      if (preview) preview.innerHTML = `<pre>${escapeHTML(contenido)}</pre>`;
+      window.setEstado(estado, "Guardado correctamente", "estado-ok");
+    } catch (e) {
+      window.setEstado(estado, "Error", "estado-error");
+    }
   });
 
   cont.querySelector("#btnEnviarTesis").addEventListener("click", () => {

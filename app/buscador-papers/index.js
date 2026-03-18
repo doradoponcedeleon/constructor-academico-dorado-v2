@@ -5,7 +5,7 @@ function renderBuscadorPapers() {
   cont.innerHTML = `
     <div class="modulo-card">
       <h2>Buscador Papers</h2>
-      <p>Búsqueda académica en Semantic Scholar.</p>
+      <p>Búsqueda académica con datos de ejemplo.</p>
       <div class="bitacora-form">
         <input id="bpQuery" type="text" placeholder="Buscar papers" />
         <button id="btnBuscarPapers" class="btn">Buscar</button>
@@ -28,10 +28,10 @@ function renderBuscadorPapers() {
     }
 
     listaEl.innerHTML = "";
-    if (meta.fuente === "semantic-proxy") {
+    if (meta.fuente === "demo") {
       const aviso = document.createElement("div");
       aviso.className = "card";
-      aviso.innerHTML = "<p class=\"muted\">Resultados vía proxy (Semantic Scholar).</p>";
+      aviso.innerHTML = "<p class=\"muted\">Resultados demo (sin conexión).</p>";
       listaEl.appendChild(aviso);
     }
     resultados.forEach((r, idx) => {
@@ -57,6 +57,7 @@ function renderBuscadorPapers() {
 
     listaEl.querySelectorAll("[data-add]").forEach((btn) => {
       btn.addEventListener("click", () => {
+        setEstado("Generando...", "estado-warn");
         const idx = parseInt(btn.getAttribute("data-add"), 10);
         const r = resultados[idx];
         if (!r) return;
@@ -69,12 +70,13 @@ function renderBuscadorPapers() {
         } else {
           safeSetJSON("referencias", lista);
         }
-        setEstado("Referencia agregada", "estado-ok");
+        setEstado("Guardado correctamente", "estado-ok");
       });
     });
 
     listaEl.querySelectorAll("[data-apa]").forEach((btn) => {
       btn.addEventListener("click", async () => {
+        setEstado("Generando...", "estado-warn");
         const idx = parseInt(btn.getAttribute("data-apa"), 10);
         const r = resultados[idx];
         if (!r) return;
@@ -83,7 +85,7 @@ function renderBuscadorPapers() {
         if (navigator.clipboard?.writeText) {
           try {
             await navigator.clipboard.writeText(cita);
-            setEstado("Cita APA copiada al portapapeles", "estado-ok");
+            setEstado("Guardado correctamente", "estado-ok");
           } catch (e) {
             setEstado(cita, "estado-warn");
           }
@@ -95,6 +97,7 @@ function renderBuscadorPapers() {
 
     listaEl.querySelectorAll("[data-send]").forEach((btn) => {
       btn.addEventListener("click", () => {
+        setEstado("Generando...", "estado-warn");
         const idx = parseInt(btn.getAttribute("data-send"), 10);
         const r = resultados[idx];
         if (!r) return;
@@ -107,13 +110,17 @@ function renderBuscadorPapers() {
           `${ref.doi ? `**DOI/URL:** ${ref.doi}\n` : ""}` +
           `\n## Resumen\n${r.resumen || "Resumen no disponible."}\n\n` +
           `## Cita APA\n${cita}\n`;
-        localStorage.setItem("documento_base", doc);
+        if (window.appendDocumentoEditor) {
+          window.appendDocumentoEditor(doc);
+        } else {
+          localStorage.setItem("documento_editor", doc);
+        }
         if (typeof window.sincronizarEditorConDocumentoBase === "function") {
           window.sincronizarEditorConDocumentoBase(doc);
-          setEstado("Enviado al editor", "estado-ok");
+          setEstado("Guardado correctamente", "estado-ok");
         } else if (typeof window.sincronizarEditorConPaper === "function") {
           window.sincronizarEditorConPaper(doc);
-          setEstado("Enviado al editor", "estado-ok");
+          setEstado("Guardado correctamente", "estado-ok");
         } else {
           setEstado("No se pudo sincronizar con el editor", "estado-error");
         }
@@ -128,9 +135,9 @@ function renderBuscadorPapers() {
       return;
     }
 
-    setEstado("Buscando...", "estado-warn");
+    setEstado("Generando...", "estado-warn");
     try {
-      const res = await buscarPapersCrossRef(query);
+      const res = buscarPapersDemo(query);
       const resultados = res.resultados || [];
       if (!window.CADState) window.CADState = {};
       window.CADState.buscadorPapers = { query, resultados, fuente: res.fuente };
@@ -138,23 +145,11 @@ function renderBuscadorPapers() {
         CADCore.storage.guardarEstadoLocal(window.CADState);
       }
       aplicarResultados(resultados, { fuente: res.fuente });
-      setEstado("Resultados cargados (CrossRef)", "estado-ok");
+      setEstado("Guardado correctamente", "estado-ok");
     } catch (e) {
-      try {
-        const res = await buscarPapersSemanticScholarProxy(query);
-        const resultados = res.resultados || [];
-        if (!window.CADState) window.CADState = {};
-        window.CADState.buscadorPapers = { query, resultados, fuente: res.fuente };
-        if (window.CADCore?.storage?.guardarEstadoLocal) {
-          CADCore.storage.guardarEstadoLocal(window.CADState);
-        }
-        aplicarResultados(resultados, { fuente: res.fuente });
-        setEstado("Resultados cargados (Semantic Scholar proxy)", "estado-ok");
-      } catch (e2) {
-        if (listaEl) listaEl.innerHTML = "<p class=\"muted\">Sin resultados.</p>";
-        setEstado("Error al buscar papers. Intenta más tarde.", "estado-error");
-        if (window.logCAD) logCAD("buscador-papers error", e2);
-      }
+      if (listaEl) listaEl.innerHTML = "<p class=\"muted\">Sin resultados.</p>";
+      setEstado("Error", "estado-error");
+      if (window.logCAD) logCAD("buscador-papers error", e);
     }
   });
 

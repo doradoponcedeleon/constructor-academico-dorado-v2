@@ -49,3 +49,57 @@ window.setEstado = function (el, msg, type) {
   el.classList.remove("estado-ok", "estado-warn", "estado-error");
   if (type) el.classList.add(type);
 };
+
+window.parseDocumentoBase = function () {
+  const raw = localStorage.getItem("documento_base");
+  if (!raw) return null;
+  try {
+    const data = JSON.parse(raw);
+    if (data && typeof data === "object") return data;
+  } catch (e) {
+    return { raw };
+  }
+  return null;
+};
+
+window.documentoBaseToMarkdown = function (doc) {
+  if (!doc) return "";
+  if (doc.raw) return String(doc.raw);
+  const partes = [];
+  if (doc.tema) partes.push(`# ${doc.tema}`);
+  if (doc.introduccion) partes.push(`## Introducción\n${doc.introduccion}`);
+  if (doc.problema) partes.push(`## Problema\n${doc.problema}`);
+  if (doc.objetivos) partes.push(`## Objetivos\n${doc.objetivos}`);
+  return partes.join("\n\n").trim();
+};
+
+window.documentoBaseToSecciones = function (doc) {
+  if (!doc) return [];
+  if (doc.raw) {
+    return [{ titulo: "Documento base", contenido: String(doc.raw) }];
+  }
+  const secciones = [];
+  if (doc.introduccion) secciones.push({ titulo: "Introducción", contenido: doc.introduccion });
+  if (doc.problema) secciones.push({ titulo: "Problema", contenido: doc.problema });
+  if (doc.objetivos) secciones.push({ titulo: "Objetivos", contenido: doc.objetivos });
+  return secciones;
+};
+
+window.compilarDocumentoEditor = function (editorValor, secciones) {
+  const bloques = [];
+  if (editorValor) bloques.push(String(editorValor).trim());
+  (Array.isArray(secciones) ? secciones : []).forEach((s) => {
+    if (!s) return;
+    const titulo = s.titulo ? String(s.titulo).trim() : "Sección";
+    const contenido = s.contenido ? String(s.contenido).trim() : "";
+    bloques.push(`## ${titulo}\n\n${contenido}`.trim());
+  });
+  return bloques.filter(Boolean).join("\n\n").trim();
+};
+
+window.appendDocumentoEditor = function (texto) {
+  const actual = localStorage.getItem("documento_editor") || "";
+  const nuevo = [actual.trim(), String(texto || "").trim()].filter(Boolean).join("\n\n");
+  localStorage.setItem("documento_editor", nuevo);
+  return nuevo;
+};

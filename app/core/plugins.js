@@ -240,6 +240,7 @@ window.CADPlugins.registrarModulos([
       "exportar-html.js",
       "exportar-txt.js",
       "exportar-json.js",
+      "google-drive.js",
       "ui.js",
       "logic.js"
     ]
