@@ -73,10 +73,11 @@ function renderCitasAPA() {
     };
     console.log("APA SELECTORS:", selectors);
 
-    const inputs = document.querySelectorAll("input, textarea");
+    const inputs = document.querySelectorAll("input, textarea, [contenteditable=\"true\"]");
     console.log("APA INPUTS SCAN (global):");
     inputs.forEach((el) => {
-      console.log(el.placeholder, el.id, el.name, el.value);
+      const value = (el.value || el.textContent || "").trim();
+      console.log(el.placeholder, el.id, el.name, value);
     });
 
     const matches = {
@@ -85,7 +86,7 @@ function renderCitasAPA() {
       titulo: []
     };
     inputs.forEach((el) => {
-      const value = (el.value || "").trim();
+      const value = (el.value || el.textContent || "").trim();
       if (!value) return;
       if (value.includes("Perez")) matches.autor.push({ id: el.id, name: el.name, placeholder: el.placeholder, value });
       if (value.includes("2020")) matches.anio.push({ id: el.id, name: el.name, placeholder: el.placeholder, value });
@@ -93,12 +94,76 @@ function renderCitasAPA() {
     });
     console.log("APA MATCHES:", matches);
 
-    const autor = (cont.querySelector(selectors.autor) || document.getElementById("apa-autor"))?.value?.trim() || "";
-    const anio = (cont.querySelector(selectors.anio) || document.getElementById("apa-anio"))?.value?.trim() || "";
-    const titulo = (cont.querySelector(selectors.titulo) || document.getElementById("apa-titulo"))?.value?.trim() || "";
-    const revista = (cont.querySelector(selectors.fuente) || document.getElementById("apa-fuente"))?.value?.trim() || "";
-    const editorial = (cont.querySelector(selectors.editorial) || document.getElementById("apa-editorial"))?.value?.trim() || "";
-    const doi = (cont.querySelector(selectors.url) || document.getElementById("apa-url"))?.value?.trim() || "";
+    const getValue = (sel) => {
+      const el = cont.querySelector(sel) || document.querySelector(sel);
+      if (!el) return "";
+      return (el.value || el.textContent || "").trim();
+    };
+
+    let autor = getValue(selectors.autor);
+    let anio = getValue(selectors.anio);
+    let titulo = getValue(selectors.titulo);
+    let revista = getValue(selectors.fuente);
+    let editorial = getValue(selectors.editorial);
+    let doi = getValue(selectors.url);
+
+    const usedFrom = { autor: null, anio: null, titulo: null, revista: null, editorial: null, doi: null };
+
+    const nonEmptyInputs = Array.from(inputs)
+      .map((el) => ({
+        el,
+        value: (el.value || el.textContent || "").trim(),
+        placeholder: (el.placeholder || "").toLowerCase(),
+        id: (el.id || "").toLowerCase(),
+        name: (el.name || "").toLowerCase(),
+        label: (el.getAttribute("aria-label") || "").toLowerCase()
+      }))
+      .filter((it) => it.value);
+
+    if (!autor) {
+      const pick = nonEmptyInputs.find((it) => it.placeholder.includes("autor") || it.id.includes("autor") || it.name.includes("autor") || it.label.includes("autor"));
+      if (pick) {
+        autor = pick.value;
+        usedFrom.autor = pick;
+      }
+    }
+    if (!anio) {
+      const pick = nonEmptyInputs.find((it) => it.placeholder.includes("año") || it.placeholder.includes("anio") || it.id.includes("anio") || it.name.includes("anio") || it.label.includes("anio") || /^\d{4}$/.test(it.value));
+      if (pick) {
+        anio = pick.value;
+        usedFrom.anio = pick;
+      }
+    }
+    if (!titulo) {
+      const pick = nonEmptyInputs.find((it) => it.placeholder.includes("título") || it.placeholder.includes("titulo") || it.id.includes("titulo") || it.name.includes("titulo") || it.label.includes("titulo"));
+      if (pick) {
+        titulo = pick.value;
+        usedFrom.titulo = pick;
+      }
+    }
+    if (!revista) {
+      const pick = nonEmptyInputs.find((it) => it.placeholder.includes("revista") || it.placeholder.includes("libro") || it.placeholder.includes("sitio") || it.id.includes("fuente") || it.name.includes("fuente"));
+      if (pick) {
+        revista = pick.value;
+        usedFrom.revista = pick;
+      }
+    }
+    if (!editorial) {
+      const pick = nonEmptyInputs.find((it) => it.placeholder.includes("editorial") || it.id.includes("editorial") || it.name.includes("editorial"));
+      if (pick) {
+        editorial = pick.value;
+        usedFrom.editorial = pick;
+      }
+    }
+    if (!doi) {
+      const pick = nonEmptyInputs.find((it) => it.placeholder.includes("doi") || it.placeholder.includes("url") || it.id.includes("doi") || it.name.includes("doi"));
+      if (pick) {
+        doi = pick.value;
+        usedFrom.doi = pick;
+      }
+    }
+
+    console.log("APA USED FROM:", usedFrom);
 
     return { autor, anio, titulo, revista, editorial, doi };
   };
