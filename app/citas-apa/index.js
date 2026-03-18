@@ -34,10 +34,17 @@ function guardarCitaEnReferencias(ref) {
     alert("Faltan datos en la referencia");
     return;
   }
+  const normalizada = {
+    title: (ref.titulo || ref.title || "").trim(),
+    authors: (ref.autor || ref.authors || "").trim(),
+    year: (ref.anio || ref.year || "").trim(),
+    source: (ref.revista || ref.source || ref.fuente || "").trim(),
+    url: (ref.doi || ref.url || "").trim()
+  };
   const lista = JSON.parse(localStorage.getItem("referencias") || "[]");
-  lista.push(ref);
+  lista.push(normalizada);
   localStorage.setItem("referencias", JSON.stringify(lista));
-  console.log("Referencia guardada:", ref);
+  console.log("Referencia guardada:", normalizada);
 }
 
 function renderCitasAPA() {
