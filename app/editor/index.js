@@ -23,7 +23,7 @@ function renderEditor() {
     : (docBaseRaw ? "documento_base" : (legacySecciones.length ? "secciones_editor (legacy)" : "ninguna"));
 
   if (!docEditor && !docBaseRaw && !legacySecciones.length) {
-    window.CADState.editor.secciones = [{ titulo: "Introducción", contenido: "" }];
+    window.CADState.editor.secciones = [];
   }
   if (docEditor || docBaseRaw) {
     window.CADState.editor.secciones = [];
@@ -165,7 +165,15 @@ function limpiarEditorLocal() {
   if (window.CADState && window.CADState.editor) {
     window.CADState.editor.secciones = [];
   }
+  if (window.PEditor) {
+    PEditor.sections.lista = [];
+  }
+  if (window.CADCore?.storage?.limpiarEstadoLocal) {
+    CADCore.storage.limpiarEstadoLocal();
+  }
   const estado = document.getElementById("estadoEditor");
-  window.setEstado(estado, "Editor limpiado", "estado-ok");
+  window.setEstado(estado, "Editor limpiado correctamente", "estado-ok");
+  console.log("EDITOR CLEANED");
+  console.log("SECCIONES CLEARED:", window.CADState?.editor?.secciones || []);
   renderEditor();
 }
