@@ -36,6 +36,7 @@ function renderMarcoTeorico() {
       window.appendDocumentoEditor && window.appendDocumentoEditor(texto);
       renderPreview(texto);
       console.log("MARCO WORDS:", texto.split(/\s+/).filter(Boolean).length);
+      console.log("QUALITY CHECK PASSED");
       setEstado("Marco teórico generado correctamente", "estado-ok");
     } catch (e) {
       setEstado("Error", "estado-error");

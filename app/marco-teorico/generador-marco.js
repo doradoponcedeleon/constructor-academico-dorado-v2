@@ -106,6 +106,24 @@ function selectorConectores() {
   };
 }
 
+function construirParrafoAcademico({ idea, explicacion, aplicacion, ejemplo, conexion }) {
+  return [idea, explicacion, aplicacion, ejemplo, conexion].filter(Boolean).join(" ");
+}
+
+function validarParrafo(parrafo) {
+  const reglas = [
+    /universidad|universitario|educación superior/i,
+    /IA|inteligencia artificial|ChatGPT|sistemas adaptativos|evaluación automatizada/i,
+    /uso inadecuado|uso superficial|dependencia|pensamiento crítico/i
+  ];
+  return reglas.every((r) => r.test(parrafo));
+}
+
+function asegurarParrafoCalidad(parrafo, fallback) {
+  if (validarParrafo(parrafo)) return parrafo;
+  return fallback;
+}
+
 function expandirParrafos(parrafos, tema, problema, conceptos, minParrafos) {
   const next = selectorConectores();
   const extras = [
@@ -164,143 +182,208 @@ function generarMarcoTeorico(referencias) {
   const refs = (referencias || []).map(normalizarReferenciaMarco);
   const datos = obtenerDatosMotorIdeas();
   const tema = datos.tema || "Tema de investigación";
-  const problema = datos.problema || "Se reconoce un problema académico que requiere delimitación conceptual.";
-  const conceptos = datos.conceptos || "Se consideran constructos relacionados con tecnología, aprendizaje y evaluación.";
+  const problemaTexto = datos.problema || "el uso inadecuado de IA por parte de estudiantes universitarios";
+  const conceptos = datos.conceptos || "tecnología educativa, aprendizaje y evaluación";
+  const problemaClave = "el uso inadecuado de IA, la dependencia y la pérdida de pensamiento crítico";
 
-  const refsUsadas = refs
-    .filter((r) => r.titulo || r.resumen || r.autores)
-    .slice(0, 6);
+  const refsUsadas = refs.filter((r) => r.titulo || r.autores || r.resumen).slice(0, 6);
   const referenciasNarrativas = refsUsadas
     .map(construirReferenciaNarrativa)
-    .filter((t) => t && !t.includes("Resumen no disponible") && !t.includes("Autor (s.f.)"));
+    .filter((t) => t && !t.includes("Autor (s.f.)") && !t.includes("Resumen no disponible"));
 
   const next = selectorConectores();
   let texto = "## Marco Teórico\n\n";
-  texto += construirParrafo(
-    `${next()}, este capítulo establece los fundamentos conceptuales del estudio y delimita los enfoques que orientan su interpretación.`,
-    `Se parte del problema de investigación formulado como ${problema.toLowerCase()}, con el propósito de relacionarlo con **${tema}** y con los conceptos que estructuran el análisis.`
-  ) + "\n\n";
 
   const introMarco = expandirParrafos([
-    construirParrafo(
-      `${next()}, el marco teórico cumple la función de organizar el conocimiento existente, identificar vacíos y sustentar la pertinencia de la investigación.`,
-      `En el ámbito universitario, esta tarea implica considerar la transformación digital y el papel creciente de la inteligencia artificial en los procesos formativos.`
-    ),
-    construirParrafo(
-      `${next()}, la coherencia del capítulo se apoya en la articulación entre teoría educativa, innovación tecnológica y necesidades institucionales.`,
-      `Esta articulación permite comprender el alcance de **${tema}** y justifica el enfoque adoptado para abordar ${problema.toLowerCase()}.`
-    ),
-    construirParrafo(
-      `${next()}, además, el marco teórico define categorías analíticas que guían la construcción de instrumentos y la interpretación de resultados.`,
-      `Por ello, se enfatiza la consistencia entre conceptos, supuestos pedagógicos y criterios de evaluación del aprendizaje.`
-    )
-  ], tema, problema, conceptos, 3);
+    asegurarParrafoCalidad(construirParrafoAcademico({
+      idea: `${next()}, el capítulo establece el propósito del marco teórico y su vínculo directo con el problema de investigación.`,
+      explicacion: `La función del marco no es solo describir conceptos, sino explicar cómo operan y por qué son pertinentes.`,
+      aplicacion: `En educación superior, esto significa analizar cómo la IA interviene en la enseñanza, en la evaluación y en la autonomía del estudiante.`,
+      ejemplo: `Por ejemplo, un estudiante puede usar ChatGPT para copiar respuestas y evitar el análisis, lo que distorsiona su aprendizaje.`,
+      conexion: `Esta práctica se relaciona con ${problemaClave} y revela ${problemaTexto.toLowerCase()} como núcleo del estudio.`
+    }), construirParrafoAcademico({
+      idea: `${next()}, el marco teórico organiza el conocimiento disponible para sostener decisiones metodológicas.`,
+      explicacion: `Si los conceptos están mal delimitados, el análisis se vuelve superficial y la investigación pierde rigor.`,
+      aplicacion: `En el entorno universitario, esto afecta la forma en que se evalúan herramientas como plataformas adaptativas o sistemas de evaluación automatizada.`,
+      ejemplo: `Un docente puede exigir uso crítico de IA, pero si el estudiante solo genera textos sin comprensión, el proceso se vacía.`,
+      conexion: `Esto conecta con ${problemaClave} y muestra por qué el tema requiere un análisis profundo.`
+    })),
+    asegurarParrafoCalidad(construirParrafoAcademico({
+      idea: `${next()}, la coherencia del capítulo depende de vincular teoría pedagógica y tecnología educativa.`,
+      explicacion: `El análisis teórico debe responder a cómo la IA transforma prácticas docentes y la relación con el conocimiento.`,
+      aplicacion: `En universidades, esto se expresa en plataformas digitales, analítica de aprendizaje y recomendaciones automatizadas.`,
+      ejemplo: `Si un sistema adaptativo sugiere actividades pero el estudiante solo busca atajos con IA, la formación crítica se debilita.`,
+      conexion: `Este fenómeno es central en ${problemaClave} y justifica el enfoque del estudio.`
+    }), construirParrafoAcademico({
+      idea: `${next()}, el marco teórico define categorías que permiten evaluar el uso responsable de la IA.`,
+      explicacion: `Estas categorías guían la selección de variables y la lectura de resultados académicos.`,
+      aplicacion: `En educación superior, estas categorías permiten diferenciar entre apoyo legítimo y dependencia tecnológica.`,
+      ejemplo: `Un estudiante que utiliza ChatGPT como apoyo para contrastar fuentes desarrolla criterio; uno que copia respuestas lo pierde.`,
+      conexion: `Por ello, ${problemaTexto.toLowerCase()} se aborda como un problema de formación crítica.`
+    }))
+  ], tema, problemaTexto, conceptos, 3);
 
   const antecedentes = expandirParrafos([
-    construirParrafo(
-      `${next()}, la evolución de la inteligencia artificial en educación puede comprenderse como parte de una trayectoria mayor de automatización y digitalización.`,
-      `Durante las últimas décadas, las universidades han incorporado plataformas de gestión del aprendizaje y sistemas de apoyo que transformaron el acceso a contenidos y la comunicación académica.`
-    ),
-    construirParrafo(
-      `${next()}, el desarrollo de la analítica de aprendizaje y de la minería de datos educativos impulsó una lectura más fina del comportamiento estudiantil.`,
-      `En consecuencia, la IA comenzó a utilizarse para anticipar riesgos de deserción, personalizar actividades y optimizar la retroalimentación.`
-    ),
-    construirParrafo(
-      `${next()}, en la actualidad, la aparición de modelos de lenguaje y tutores inteligentes ha ampliado el repertorio de herramientas disponibles.`,
-      `Esta transición no solo modifica las prácticas docentes, sino que también reconfigura el rol del estudiante como agente activo en su propio aprendizaje.`
-    ),
-    construirParrafo(
-      `${next()}, a futuro, la convergencia entre inteligencia artificial, educación digital y políticas institucionales sugiere escenarios de mayor personalización.`,
-      `No obstante, persisten desafíos de gobernanza, ética y equidad que requieren un análisis crítico en el marco de **${tema}**.`
-    )
-  ], tema, problema, conceptos, 3);
+    asegurarParrafoCalidad(construirParrafoAcademico({
+      idea: `${next()}, la IA en educación surge de la transformación digital de la universidad.`,
+      explicacion: `En las primeras etapas, la digitalización se centró en repositorios y plataformas, pero con el tiempo se incorporaron sistemas capaces de analizar datos de aprendizaje.`,
+      aplicacion: `Esto permitió identificar patrones de desempeño, personalizar contenidos y automatizar retroalimentación.`,
+      ejemplo: `Por ejemplo, un sistema puede detectar que un estudiante usa ChatGPT para resolver tareas sin revisar fuentes.`,
+      conexion: `Este antecedente se conecta con ${problemaClave} al mostrar cómo la tecnología puede facilitar un uso superficial.`
+    }), construirParrafoAcademico({
+      idea: `${next()}, la analítica del aprendizaje y la minería de datos educativos consolidaron el uso de IA en universidades.`,
+      explicacion: `Estos enfoques interpretan grandes volúmenes de datos para anticipar riesgos y recomendar estrategias.`,
+      aplicacion: `En educación superior, se usan para tutorías personalizadas y seguimiento académico continuo.`,
+      ejemplo: `Sin embargo, si el estudiante solo busca respuestas automáticas, la personalización puede perder sentido.`,
+      conexion: `Esto evidencia ${problemaClave} y la necesidad de orientar la IA hacia aprendizajes significativos.`
+    })),
+    asegurarParrafoCalidad(construirParrafoAcademico({
+      idea: `${next()}, la aparición de modelos generativos amplió las posibilidades de producción académica.`,
+      explicacion: `Estos modelos generan texto, resúmenes y explicaciones, lo que puede apoyar el estudio si se usa críticamente.`,
+      aplicacion: `En universidades, se integran en actividades de escritura y análisis, pero también generan riesgos de copia.`,
+      ejemplo: `Un estudiante que utiliza ChatGPT solo para entregar un ensayo sin análisis incurre en aprendizaje superficial.`,
+      conexion: `Este riesgo es parte de ${problemaClave} y exige reflexión pedagógica.`
+    }), construirParrafoAcademico({
+      idea: `${next()}, a futuro, la IA educativa se orienta a sistemas explicables y regulados.`,
+      explicacion: `El desafío es combinar innovación con marcos éticos y pedagógicos sólidos.`,
+      aplicacion: `En el contexto universitario, esto requiere políticas sobre uso de IA en evaluación y formación.`,
+      ejemplo: `Si la universidad no define criterios, el uso de ChatGPT se convierte en atajo en lugar de apoyo.`,
+      conexion: `Por ello, ${problemaTexto.toLowerCase()} debe abordarse con criterios institucionales claros.`
+    }))
+  ], tema, problemaTexto, conceptos, 3);
 
   const fundamentos = expandirParrafos([
-    construirParrafo(
-      `${next()}, la inteligencia artificial puede definirse como el conjunto de técnicas orientadas a simular procesos de razonamiento, aprendizaje y toma de decisiones.`,
-      `En educación superior, su aplicación se traduce en sistemas capaces de analizar patrones de estudio, recomendar actividades y ofrecer retroalimentación personalizada.`
-    ),
-    construirParrafo(
-      `${next()}, el aprendizaje adaptativo se entiende como un enfoque que ajusta contenidos, ritmos y estrategias en función de la trayectoria individual.`,
-      `Este principio se apoya en modelos de datos que permiten identificar fortalezas y dificultades, y en consecuencia modificar la experiencia educativa.`
-    ),
-    construirParrafo(
-      `${next()}, la educación digital comprende el conjunto de prácticas, plataformas y recursos que trasladan o complementan el aula física.`,
-      `Su alcance va más allá de la virtualización, pues incorpora dinámicas de colaboración, evaluación continua y acceso flexible al conocimiento.`
-    ),
-    construirParrafo(
-      `${next()}, la automatización educativa alude a la delegación de tareas repetitivas o analíticas a sistemas inteligentes.`,
-      `Este proceso puede optimizar tiempos y decisiones, pero requiere criterios claros para evitar la pérdida de agencia pedagógica y la sobredependencia tecnológica.`
-    )
-  ], tema, problema, conceptos, 3);
+    asegurarParrafoCalidad(construirParrafoAcademico({
+      idea: `${next()}, la inteligencia artificial es un conjunto de métodos que permiten aprender de datos y producir respuestas basadas en patrones.`,
+      explicacion: `Su funcionamiento implica entrenamiento de modelos que ajustan parámetros según ejemplos, lo que permite generalizar a nuevas situaciones.`,
+      aplicacion: `En universidades, esta capacidad se usa para recomendar recursos, analizar desempeño y automatizar feedback.`,
+      ejemplo: `Un sistema puede sugerir lecturas a un estudiante, pero si este solo copia respuestas de ChatGPT, el aprendizaje pierde profundidad.`,
+      conexion: `Esta situación refleja ${problemaClave} y plantea la necesidad de formar pensamiento crítico.`
+    }), construirParrafoAcademico({
+      idea: `${next()}, el aprendizaje adaptativo ajusta contenidos según la trayectoria individual.`,
+      explicacion: `Se apoya en datos de desempeño y establece rutas diferenciadas para cada estudiante.`,
+      aplicacion: `En educación superior, esto puede mejorar el rendimiento si el estudiante participa activamente en la ruta propuesta.`,
+      ejemplo: `Si el estudiante usa IA para resolver tareas sin revisar los procesos, la adaptación se convierte en un mecanismo superficial.`,
+      conexion: `Así se evidencia ${problemaClave} y el riesgo de dependencia tecnológica.`
+    })),
+    asegurarParrafoCalidad(construirParrafoAcademico({
+      idea: `${next()}, la educación digital integra plataformas, interacción en línea y evaluación continua.`,
+      explicacion: `No se limita a virtualizar clases, sino que transforma la forma en que se construye el conocimiento.`,
+      aplicacion: `En universidades, esto implica que el aprendizaje ocurre en espacios híbridos y con múltiples fuentes.`,
+      ejemplo: `Un estudiante puede usar plataformas adaptativas y ChatGPT simultáneamente, pero si no contrasta información, el aprendizaje se debilita.`,
+      conexion: `Esto conecta con ${problemaClave} al revelar un uso superficial de herramientas digitales.`
+    }), construirParrafoAcademico({
+      idea: `${next()}, la automatización educativa delega procesos a sistemas inteligentes.`,
+      explicacion: `Incluye corrección automática, generación de informes y recomendaciones académicas.`,
+      aplicacion: `En educación superior, puede liberar tiempo docente pero también reducir interacción pedagógica.`,
+      ejemplo: `Si la evaluación se automatiza, el estudiante puede buscar atajos con IA para obtener calificaciones.`,
+      conexion: `Este escenario se vincula con ${problemaClave} y la pérdida de pensamiento crítico.`
+    }))
+  ], tema, problemaTexto, conceptos, 3);
 
   const modelos = expandirParrafos([
-    construirParrafo(
-      `${next()}, el constructivismo sostiene que el aprendizaje es una construcción activa de significados basada en la interacción con el entorno.`,
-      `En el ámbito de la IA, este enfoque sugiere diseñar sistemas que promuevan exploración, reflexión y resolución de problemas auténticos.`
-    ),
-    construirParrafo(
-      `${next()}, el conductismo, en contraste, enfatiza la relación entre estímulos, respuestas y refuerzos.`,
-      `Su influencia se observa en sistemas que aplican retroalimentación inmediata y mecanismos de refuerzo para consolidar habilidades específicas.`
-    ),
-    construirParrafo(
-      `${next()}, el cognitivismo aporta una mirada sobre los procesos internos de procesamiento de información, memoria y metacognición.`,
-      `Desde esta perspectiva, la IA puede facilitar estrategias de autorregulación al proporcionar rutas de estudio personalizadas.`
-    ),
-    construirParrafo(
-      `${next()}, el aprendizaje adaptativo integra elementos de estos modelos al convertirlos en reglas de ajuste dinámico.`,
-      `Así, se conecta el soporte tecnológico con principios pedagógicos que aseguran coherencia entre objetivos, contenidos y evaluación.`
-    )
-  ], tema, problema, conceptos, 3);
+    asegurarParrafoCalidad(construirParrafoAcademico({
+      idea: `${next()}, el constructivismo entiende el aprendizaje como construcción activa de significado.`,
+      explicacion: `El estudiante interpreta información y la integra con experiencias previas.`,
+      aplicacion: `En el uso de IA universitaria, este enfoque exige que las herramientas promuevan reflexión y no solo entrega de respuestas.`,
+      ejemplo: `Si un estudiante usa ChatGPT para argumentar un ensayo, debe contrastar fuentes para construir significado.`,
+      conexion: `Sin esta reflexión, ${problemaClave} se profundiza al reemplazar análisis por copia.`
+    }), construirParrafoAcademico({
+      idea: `${next()}, el conductismo enfatiza estímulos y refuerzos para consolidar aprendizajes.`,
+      explicacion: `La IA puede aplicar esta lógica mediante feedback inmediato y recompensas digitales.`,
+      aplicacion: `En universidades, esto puede fortalecer habilidades básicas, pero no garantiza pensamiento crítico.`,
+      ejemplo: `Un estudiante puede completar ejercicios con IA sin comprender el razonamiento subyacente.`,
+      conexion: `Esto ilustra ${problemaClave} al evidenciar uso superficial de herramientas.`
+    })),
+    asegurarParrafoCalidad(construirParrafoAcademico({
+      idea: `${next()}, el cognitivismo se centra en procesos internos como memoria y metacognición.`,
+      explicacion: `Aprender implica regular estrategias y comprender cómo se procesa la información.`,
+      aplicacion: `La IA puede apoyar este enfoque si ofrece explicaciones y rutas de estudio personalizadas.`,
+      ejemplo: `Si el estudiante usa un sistema adaptativo sin revisar su razonamiento, la metacognición se debilita.`,
+      conexion: `De este modo, ${problemaClave} aparece como riesgo en el uso de IA.`
+    }), construirParrafoAcademico({
+      idea: `${next()}, el aprendizaje adaptativo integra elementos de estos modelos para ajustar la enseñanza.`,
+      explicacion: `Combina datos de desempeño con criterios pedagógicos para personalizar rutas.`,
+      aplicacion: `En universidades, esto permite atender diversidad de perfiles, pero exige autonomía del estudiante.`,
+      ejemplo: `Cuando el estudiante depende de ChatGPT para resolver todo, la adaptación pierde sentido formativo.`,
+      conexion: `Así, ${problemaTexto.toLowerCase()} se vincula directamente con el uso inadecuado de IA.`
+    }))
+  ], tema, problemaTexto, conceptos, 3);
 
   const recientes = expandirParrafos([
-    construirParrafo(
-      `${next()}, las investigaciones recientes sobre IA en educación superior destacan su uso para apoyar la permanencia estudiantil y la mejora del rendimiento.`,
-      `En la literatura especializada se describen sistemas que identifican patrones de riesgo, proponen tutorías personalizadas y optimizan la gestión académica.`
-    ),
-    construirParrafo(
-      `${next()}, también se observan tendencias hacia la automatización de procesos administrativos y de evaluación, con el objetivo de liberar tiempo docente.`,
-      `Sin embargo, estos avances conllevan debates sobre transparencia, sesgos algorítmicos y responsabilidad institucional.`
-    ),
-    construirParrafo(
-      `${next()}, la discusión ética se centra en el uso de datos, la privacidad y la toma de decisiones automatizada.`,
-      `En este marco, el estudio de **${tema}** exige considerar no solo beneficios, sino también limitaciones y riesgos potenciales.`
-    ),
-    construirParrafo(
-      `${next()}, cuando las referencias disponibles son parciales, el análisis académico se apoya en síntesis teóricas plausibles que mantienen coherencia conceptual.`,
-      `Este enfoque permite construir una narrativa sólida sin recurrir a citas fragmentarias o incompletas.`
-    )
-  ], tema, problema, conceptos, 3);
+    asegurarParrafoCalidad(construirParrafoAcademico({
+      idea: `${next()}, investigaciones recientes muestran el uso de IA para predecir riesgos académicos en universidades.`,
+      explicacion: `Los modelos analizan datos de interacción, calificaciones y asistencia.`,
+      aplicacion: `Esto permite diseñar tutorías personalizadas y estrategias de apoyo.`,
+      ejemplo: `Cuando se detecta que un estudiante usa IA para copiar respuestas, se pueden activar intervenciones.`,
+      conexion: `Este enfoque responde a ${problemaClave} y busca fortalecer el pensamiento crítico.`
+    }), construirParrafoAcademico({
+      idea: `${next()}, se reportan avances en evaluación automatizada y generación de feedback.`,
+      explicacion: `La IA puede analizar textos y sugerir mejoras, pero su uso requiere criterios de validación.`,
+      aplicacion: `En educación superior, esto plantea dilemas sobre qué evaluar: el texto generado o el proceso de aprendizaje.`,
+      ejemplo: `Si el estudiante usa ChatGPT para producir ensayos sin comprender, la evaluación pierde sentido formativo.`,
+      conexion: `Esto evidencia ${problemaClave} como un desafío central.`
+    })),
+    asegurarParrafoCalidad(construirParrafoAcademico({
+      idea: `${next()}, la literatura especializada advierte riesgos éticos y de dependencia.`,
+      explicacion: `Los sistemas pueden reproducir sesgos o incentivar atajos cognitivos.`,
+      aplicacion: `En universidades, la dependencia de IA afecta la autonomía y el desarrollo de habilidades críticas.`,
+      ejemplo: `Cuando los estudiantes se acostumbran a respuestas automáticas, disminuye la capacidad de análisis propio.`,
+      conexion: `Este riesgo se relaciona directamente con ${problemaClave}.`
+    }), construirParrafoAcademico({
+      idea: `${next()}, incluso con referencias limitadas, es posible construir síntesis académicas coherentes.`,
+      explicacion: `Estas síntesis conectan teorías y prácticas sin recurrir a citas fragmentarias.`,
+      aplicacion: `En este estudio, ello permite analizar el uso de IA en universidades con rigor conceptual.`,
+      ejemplo: `Así se explica por qué el uso superficial de ChatGPT afecta la calidad del aprendizaje.`,
+      conexion: `Este enfoque sostiene el análisis de ${problemaTexto.toLowerCase()}.`
+    }))
+  ], tema, problemaTexto, conceptos, 3);
 
   const comparacion = expandirParrafos([
-    construirParrafo(
-      `${next()}, la enseñanza tradicional se caracteriza por estructuras curriculares rígidas y evaluaciones estandarizadas.`,
-      `En contraste, la enseñanza apoyada por IA incorpora rutas flexibles, retroalimentación personalizada y seguimiento continuo del desempeño.`
-    ),
-    construirParrafo(
-      `${next()}, los roles de docentes y estudiantes también se transforman: el docente se convierte en diseñador de experiencias y mediador crítico,`,
-      `mientras que el estudiante asume un papel más autónomo en la gestión de su aprendizaje.`
-    ),
-    construirParrafo(
-      `${next()}, a diferencia de modelos tradicionales, los entornos con IA permiten evaluar procesos y no solo resultados finales.`,
-      `No obstante, los riesgos incluyen la dependencia tecnológica, la pérdida de criterio pedagógico y la posibilidad de reproducir inequidades.`
-    )
-  ], tema, problema, conceptos, 3);
+    asegurarParrafoCalidad(construirParrafoAcademico({
+      idea: `${next()}, la enseñanza tradicional se centra en clases magistrales y evaluación de resultados finales.`,
+      explicacion: `Este modelo prioriza la uniformidad, con poca flexibilidad para trayectorias individuales.`,
+      aplicacion: `En contraste, la enseñanza apoyada por IA permite ajustar actividades y feedback en tiempo real.`,
+      ejemplo: `Un estudiante puede recibir ejercicios adaptados, pero si solo copia respuestas de ChatGPT, el beneficio desaparece.`,
+      conexion: `Esto muestra ${problemaClave} y la necesidad de regular el uso de IA.`
+    }), construirParrafoAcademico({
+      idea: `${next()}, el rol docente se desplaza hacia la mediación crítica.`,
+      explicacion: `La IA puede automatizar tareas, pero no reemplaza el juicio pedagógico.`,
+      aplicacion: `En universidades, el docente debe enseñar cómo usar IA para fortalecer el aprendizaje.`,
+      ejemplo: `Si el docente no guía, el estudiante puede depender de la IA y reducir su pensamiento crítico.`,
+      conexion: `Este escenario intensifica ${problemaClave}.`
+    })),
+    asegurarParrafoCalidad(construirParrafoAcademico({
+      idea: `${next()}, la evaluación tradicional mide productos finales, mientras que la IA permite evaluar procesos.`,
+      explicacion: `Esto ofrece oportunidades para monitorear aprendizaje continuo.`,
+      aplicacion: `En educación superior, se puede distinguir entre comprensión real y producción automática.`,
+      ejemplo: `Si un ensayo fue generado por ChatGPT sin análisis, el sistema debe detectar esa superficialidad.`,
+      conexion: `Así, ${problemaClave} se convierte en un criterio para evaluar efectividad de la IA.`
+    }))
+  ], tema, problemaTexto, conceptos, 3);
 
   const sintesis = expandirParrafos([
-    construirParrafo(
-      `${next()}, la síntesis teórica integra antecedentes, fundamentos y tendencias recientes para construir un marco explicativo coherente.`,
-      `Esta integración permite interpretar ${problema.toLowerCase()} desde una perspectiva que combina teoría pedagógica y capacidades tecnológicas.`
-    ),
-    construirParrafo(
-      `${next()}, el marco conceptual resultante sustenta la pertinencia del estudio y orienta la elección de variables e indicadores.`,
-      `De este modo, se fortalece la relación entre **${tema}** y los objetivos de investigación, asegurando consistencia metodológica.`
-    ),
-    construirParrafo(
-      `${next()}, finalmente, el marco teórico ofrece criterios para evaluar el impacto de la IA en la educación superior,`,
-      `considerando tanto sus aportes a la personalización del aprendizaje como los desafíos que introduce en términos de ética y gobernanza.`
-    )
-  ], tema, problema, conceptos, 3);
+    asegurarParrafoCalidad(construirParrafoAcademico({
+      idea: `${next()}, la síntesis teórica integra antecedentes, fundamentos y enfoques recientes.`,
+      explicacion: `Esta integración permite comprender la IA como mediador pedagógico, no como sustituto del aprendizaje.`,
+      aplicacion: `En universidades, el marco teórico orienta cómo evaluar la calidad del aprendizaje frente al uso de IA.`,
+      ejemplo: `Por ejemplo, se diferencia entre uso de ChatGPT como apoyo crítico y uso como atajo.`,
+      conexion: `Esto conecta con ${problemaClave} y justifica el enfoque del estudio.`
+    }), construirParrafoAcademico({
+      idea: `${next()}, el marco teórico fundamenta el objetivo de investigación y la selección de variables.`,
+      explicacion: `Sin este sustento, el análisis quedaría en afirmaciones generales y poco verificables.`,
+      aplicacion: `En educación superior, esto se traduce en indicadores sobre autonomía, pensamiento crítico y calidad del aprendizaje.`,
+      ejemplo: `Un estudiante que depende de IA para responder sin analizar muestra disminución de estas competencias.`,
+      conexion: `Este punto reafirma ${problemaClave} como eje central del estudio.`
+    })),
+    asegurarParrafoCalidad(construirParrafoAcademico({
+      idea: `${next()}, la reflexión final destaca la necesidad de un uso ético y pedagógico de la IA.`,
+      explicacion: `La tecnología puede potenciar el aprendizaje solo si se integra con criterios de formación crítica.`,
+      aplicacion: `En universidades, esto implica políticas de uso, formación docente y alfabetización digital estudiantil.`,
+      ejemplo: `Orientar a estudiantes para que utilicen ChatGPT como apoyo y no como sustituto del razonamiento es clave.`,
+      conexion: `De esta manera se aborda ${problemaTexto.toLowerCase()} y se reduce la dependencia tecnológica.`
+    }))
+  ], tema, problemaTexto, conceptos, 3);
 
   texto += generarSeccion("1. Introducción del marco teórico", introMarco);
   texto += generarSeccion("2. Antecedentes de la inteligencia artificial en educación", antecedentes);
@@ -315,11 +398,9 @@ function generarMarcoTeorico(referencias) {
     texto += referenciasNarrativas.join("\n\n") + "\n\n";
   }
 
-  texto = asegurarLongitud(texto, tema, problema, conceptos);
-
-  const palabrasFinal = contarPalabras(texto);
-  if (palabrasFinal < 1800) {
-    texto = asegurarLongitud(texto, tema, problema, conceptos);
+  texto = asegurarLongitud(texto, tema, problemaTexto, conceptos);
+  if (contarPalabras(texto) < 1800) {
+    texto = asegurarLongitud(texto, tema, problemaTexto, conceptos);
   }
 
   return texto;
