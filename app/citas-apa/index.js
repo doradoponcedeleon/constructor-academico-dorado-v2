@@ -14,6 +14,21 @@ function generarCitaAPARapida(ref) {
   return `${autor} (${anio}). ${titulo}. ${finalFuente}`.trim();
 }
 
+function generarCitaDesdeInputs(ref) {
+  const autor = (ref.autor || "").trim() || "Autor";
+  const anio = (ref.anio || "").trim() || "s.f.";
+  const titulo = (ref.titulo || "").trim() || "Título";
+  const fuente = (ref.revista || "").trim();
+  const editorial = (ref.editorial || "").trim();
+  const url = (ref.doi || "").trim();
+
+  let cita = `${autor}. (${anio}). ${titulo}.`;
+  if (fuente) cita += ` ${fuente}.`;
+  if (editorial) cita += ` ${editorial}.`;
+  if (url) cita += ` ${url}`;
+  return cita.trim();
+}
+
 function guardarCitaEnReferencias(ref) {
   if (!ref.autor || !ref.anio || !ref.titulo) {
     alert("Faltan datos en la referencia");
@@ -189,7 +204,7 @@ function renderCitasAPA() {
         <p>url leída: ${ref.doi || ""}</p>
       `;
     }
-    const cita = generarCitaAPARapida(ref);
+    const cita = generarCitaDesdeInputs(ref);
     console.log("APA OUTPUT:", cita);
     const safe = cita.replace(/</g, "&lt;").replace(/>/g, "&gt;");
     if (preview) preview.innerHTML = `<pre>${safe}</pre>`;
