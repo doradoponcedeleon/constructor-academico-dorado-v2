@@ -52,12 +52,14 @@ function renderCitasAPA() {
       <div id="debug-apa" class="card"></div>
       <div id="estado-apa" class="card"></div>
       <div id="resultado-apa" class="card"></div>
+      <div id="debug-apa-valores" class="card"></div>
     </div>
   `;
 
   const preview = cont.querySelector("#resultado-apa");
   const estado = cont.querySelector("#estado-apa");
   const debugBox = cont.querySelector("#debug-apa");
+  const debugValores = cont.querySelector("#debug-apa-valores");
   const setEstado = (msg, type) => window.setEstado(estado, msg, type);
 
   const construirRef = () => {
@@ -113,6 +115,15 @@ function renderCitasAPA() {
       editorial: ref.editorial,
       url: ref.doi
     });
+    if (debugValores) {
+      debugValores.innerHTML = `
+        <p>autor leído: ${ref.autor || ""}</p>
+        <p>anio leído: ${ref.anio || ""}</p>
+        <p>titulo leído: ${ref.titulo || ""}</p>
+        <p>fuente leída: ${ref.revista || ""}</p>
+        <p>url leída: ${ref.doi || ""}</p>
+      `;
+    }
     const cita = generarCitaAPARapida(ref);
     console.log("APA OUTPUT:", cita);
     const safe = cita.replace(/</g, "&lt;").replace(/>/g, "&gt;");
