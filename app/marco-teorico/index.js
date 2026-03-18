@@ -31,7 +31,18 @@ function renderMarcoTeorico() {
       setEstado("No hay referencias guardadas", "estado-warn");
     }
     try {
-      const texto = generarMarcoTeorico(refs);
+      let texto = generarMarcoTeorico(refs);
+      if (window.CADCitas?.injector) {
+        const res = window.CADCitas.injector.inyectar(texto, refs);
+        texto = res.texto;
+        if (res.used) {
+          setEstado("Citas integradas en la redacción", "estado-ok");
+          console.log("REFERENCIAS USADAS:", (refs || []).length);
+          console.log("CITAS INSERTADAS EN TEXTO");
+        } else {
+          setEstado("Texto generado sin citas por falta de referencias", "estado-warn");
+        }
+      }
       localStorage.setItem("marco_teorico", texto);
       window.appendDocumentoEditor && window.appendDocumentoEditor(texto);
       renderPreview(texto);

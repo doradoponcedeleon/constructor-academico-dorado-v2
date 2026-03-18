@@ -151,6 +151,7 @@ window.CADPlugins.registrarModulos([
       "utils.js",
       "schema.js",
       "storage.js",
+      "citas/injector.js",
       "index.js",
       "ui.js",
       "logic.js"
