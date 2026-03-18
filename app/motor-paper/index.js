@@ -36,9 +36,33 @@ function extraerSeccionesDesdePaper(doc) {
   return secciones;
 }
 
+function construirBloquePaper(paper, meta = {}) {
+  const partes = ["## Paper académico"];
+  if (meta.titulo) partes.push(`**Título:** ${meta.titulo}`);
+  if (meta.autores) partes.push(`**Autores:** ${meta.autores}`);
+  if (meta.area) partes.push(`**Área:** ${meta.area}`);
+  partes.push("");
+  partes.push(paper || "");
+  return partes.join("\n");
+}
+
+function integrarPaperEnEditor(paper, meta = {}) {
+  const existente = localStorage.getItem("documento_editor") || "";
+  console.log("EDITOR BEFORE MERGE:", existente);
+  console.log("PAPER TO MERGE:", paper);
+  const bloque = construirBloquePaper(paper, meta);
+  const merged = [existente.trim(), bloque.trim()].filter(Boolean).join("\n\n");
+  localStorage.setItem("documento_editor", merged);
+  console.log("EDITOR AFTER MERGE:", merged);
+  return merged;
+}
+
 function sincronizarEditorConPaper(paper, seccionesOverride) {
   const editor = document.getElementById("editor");
-  if (editor && editor.value !== paper) {
+  const actual = localStorage.getItem("documento_editor") || "";
+  if (editor && actual && editor.value !== actual) {
+    editor.value = actual;
+  } else if (editor && !actual && editor.value !== paper) {
     editor.value = paper;
   }
 
@@ -83,10 +107,6 @@ function sincronizarEditorConPaper(paper, seccionesOverride) {
     if (cont) {
       PEditor.renderer.render(cont, window.CADState.editor.secciones);
     }
-  }
-
-  if (paper) {
-    localStorage.setItem("documento_editor", paper);
   }
 }
 
@@ -168,6 +188,14 @@ function renderMotorPaper() {
       setEstado("No existe paper para enviar");
       return;
     }
+    const meta = {
+      titulo: (document.getElementById("paperTitulo")?.value || "").trim(),
+      autores: (document.getElementById("paperAutores")?.value || "").trim(),
+      area: (document.getElementById("paperArea")?.value || "").trim()
+    };
+    const merged = integrarPaperEnEditor(paper, meta);
+    const editor = document.getElementById("editor");
+    if (editor) editor.value = merged;
     let secciones = [];
     try {
       const raw = localStorage.getItem("paper_secciones");
@@ -177,12 +205,12 @@ function renderMotorPaper() {
     }
     if (typeof window.sincronizarEditorConPaper === "function") {
       window.sincronizarEditorConPaper(paper, secciones);
-      setEstado("Guardado correctamente");
+      setEstado("Contenido del paper integrado al editor");
       return;
     }
     if (typeof window.sincronizarEditorConDocumentoBase === "function") {
       window.sincronizarEditorConDocumentoBase(paper);
-      setEstado("Guardado correctamente");
+      setEstado("Contenido del paper integrado al editor");
       return;
     }
     setEstado("Error");
