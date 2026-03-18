@@ -77,24 +77,56 @@ function renderTesis() {
   cont.querySelector("#btnGenerarTesisCompleta").addEventListener("click", () => {
     window.setEstado(estado, "Generando...", "estado-warn");
     try {
+      const docBase = localStorage.getItem("documento_base") || "";
       const editorDoc = localStorage.getItem("documento_editor") || "";
+      const marco = localStorage.getItem("marco_teorico") || "";
+      const refs = safeGetJSON("referencias", []);
       const citas = safeGetJSON("citas_apa", []);
+
+      const tema = extraerBloqueMarkdown(docBase, "Tema") || "Tema no disponible";
+      const intro = extraerBloqueMarkdown(docBase, "Introducción") || "Introducción no disponible";
+      const problema = extraerBloqueMarkdown(docBase, "Problema") || "Problema no disponible";
+      const objetivos = extraerBloqueMarkdown(docBase, "Objetivos") || "Objetivos no disponibles";
+
+      const referenciasTxt = Array.isArray(refs) && refs.length
+        ? refs.map((r) => (typeof generarReferenciaAPA === "function" ? generarReferenciaAPA(r) : "")).filter(Boolean).join("\n")
+        : "Referencias no disponibles";
+
+      const citasTxt = Array.isArray(citas) && citas.length
+        ? citas.join("\n")
+        : "Citas APA no disponibles";
+
       const contenido = [
         "# Tesis completa",
-        editorDoc,
-        "## Referencias APA",
-        Array.isArray(citas) ? citas.join("\n") : ""
-      ].filter(Boolean).join("\n\n").trim();
+        "## Tema",
+        tema,
+        "## Introducción",
+        intro,
+        "## Problema",
+        problema,
+        "## Objetivos",
+        objetivos,
+        "## Marco Teórico",
+        marco || "Marco teórico no disponible",
+        "## Desarrollo",
+        editorDoc || "Desarrollo no disponible",
+        "## Referencias",
+        referenciasTxt,
+        "## Citas APA",
+        citasTxt
+      ].join("\n\n").trim();
+
       localStorage.setItem("tesis_completa", contenido);
       if (preview) preview.innerHTML = `<pre>${escapeHTML(contenido)}</pre>`;
-      window.setEstado(estado, "Guardado correctamente", "estado-ok");
+      console.log("TESIS COMPLETA:", contenido);
+      window.setEstado(estado, "Tesis completa generada correctamente", "estado-ok");
     } catch (e) {
       window.setEstado(estado, "Error", "estado-error");
     }
   });
 
   cont.querySelector("#btnEnviarTesis").addEventListener("click", () => {
-    const tesis = localStorage.getItem("tesis_base") || "";
+    const tesis = localStorage.getItem("tesis_completa") || localStorage.getItem("tesis_base") || "";
     if (!tesis) {
       window.setEstado(estado, "No existe tesis para enviar", "estado-warn");
       return;
