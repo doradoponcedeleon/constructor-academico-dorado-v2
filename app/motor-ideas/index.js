@@ -116,30 +116,43 @@ function generarDocumento() {
   const ideas = (document.getElementById("ideas")?.value || "").trim();
   const conceptos = (document.getElementById("conceptos")?.value || "").trim();
   const objetivos = (document.getElementById("objetivos")?.value || "").trim();
+  const tema = (document.getElementById("miTema")?.value || "").trim();
 
-  if (!problema && !ideas && !conceptos && !objetivos) {
+  if (!tema && !problema && !ideas && !conceptos && !objetivos) {
     mostrarEstadoMotorIdeas("Escribe contenido antes de generar");
     return;
   }
 
-  const data = {
-    tema: (document.getElementById("miTema")?.value || "").trim(),
-    introduccion: ideas || conceptos || "",
-    problema,
-    objetivos
-  };
   try {
     mostrarEstadoMotorIdeas("Generando...");
-    localStorage.setItem("documento_base", JSON.stringify(data));
-    mostrarEstadoMotorIdeas("Guardado correctamente");
+    const documento = [
+      "# Documento base",
+      "",
+      "## Tema",
+      tema || "Tema no especificado",
+      "",
+      "## Problema",
+      problema || "No se especificó el problema.",
+      "",
+      "## Ideas",
+      ideas || "No se especificaron ideas.",
+      "",
+      "## Conceptos",
+      conceptos || "No se especificaron conceptos.",
+      "",
+      "## Objetivos",
+      objetivos || "No se especificaron objetivos."
+    ].join("\n");
+    localStorage.setItem("documento_base", documento);
+    mostrarEstadoMotorIdeas("Documento base generado");
   } catch (e) {
-    mostrarEstadoMotorIdeas("Error");
+    mostrarEstadoMotorIdeas("Error al generar");
   }
 
   const resultadoDiv = document.getElementById("resultadoMotor");
   if (resultadoDiv) {
-    const markdown = window.documentoBaseToMarkdown ? window.documentoBaseToMarkdown(data) : "";
-    const safeDoc = markdown
+    const doc = localStorage.getItem("documento_base") || "";
+    const safeDoc = doc
       .replace(/</g, "&lt;")
       .replace(/>/g, "&gt;");
     resultadoDiv.innerHTML = `<pre>${safeDoc}</pre>`;
@@ -147,7 +160,7 @@ function generarDocumento() {
     info.style.fontSize = "12px";
     info.style.opacity = "0.7";
     info.style.marginTop = "8px";
-    info.textContent = "Caracteres: " + markdown.length;
+    info.textContent = "Caracteres: " + doc.length;
     resultadoDiv.appendChild(info);
   }
 }
@@ -158,12 +171,13 @@ function aplicarEditor() {
     mostrarEstadoMotorIdeas("No existe contenido para aplicar");
     return;
   }
-  mostrarEstadoMotorIdeas("Generando...");
   try {
+    mostrarEstadoMotorIdeas("Generando...");
+    localStorage.setItem("documento_editor", doc);
     sincronizarEditorConDocumentoBase(doc);
-    mostrarEstadoMotorIdeas("Guardado correctamente");
+    mostrarEstadoMotorIdeas("Enviado al editor");
   } catch (e) {
-    mostrarEstadoMotorIdeas("Error");
+    mostrarEstadoMotorIdeas("Error al generar");
   }
 }
 
@@ -206,14 +220,7 @@ function renderMotorIdeas() {
   if (doc) {
     const resultadoDiv = document.getElementById("resultadoMotor");
     if (resultadoDiv) {
-      let preview = doc;
-      try {
-        const parsed = JSON.parse(doc);
-        preview = window.documentoBaseToMarkdown ? window.documentoBaseToMarkdown(parsed) : doc;
-      } catch (e) {
-        preview = doc;
-      }
-      const safeDoc = preview
+      const safeDoc = doc
         .replace(/</g, "&lt;")
         .replace(/>/g, "&gt;");
       resultadoDiv.innerHTML = `<pre>${safeDoc}</pre>`;

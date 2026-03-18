@@ -18,8 +18,10 @@ function renderEditor() {
   }
   PEditor.sections.lista = window.CADState.editor.secciones;
 
+  const docEditor = localStorage.getItem("documento_editor") || "";
+  const docBaseRaw = localStorage.getItem("documento_base") || "";
   const docBase = window.parseDocumentoBase ? window.parseDocumentoBase() : null;
-  if (docBase && typeof window.documentoBaseToSecciones === "function") {
+  if (!docEditor && docBase && typeof window.documentoBaseToSecciones === "function") {
     const seccionesBase = window.documentoBaseToSecciones(docBase);
     if (seccionesBase.length) {
       window.CADState.editor.secciones = seccionesBase;
@@ -32,9 +34,14 @@ function renderEditor() {
   const estado = cont.querySelector("#estadoEditor");
   const setEstado = (msg, type) => window.setEstado(estado, msg, type);
 
-  if (docBase) {
-    const editorEl = cont.querySelector("#editor");
-    if (editorEl) {
+  const editorEl = cont.querySelector("#editor");
+  if (editorEl) {
+    if (docEditor) {
+      editorEl.value = docEditor;
+    } else if (docBaseRaw) {
+      editorEl.value = docBaseRaw;
+      localStorage.setItem("documento_editor", docBaseRaw);
+    } else if (docBase) {
       const markdown = window.documentoBaseToMarkdown ? window.documentoBaseToMarkdown(docBase) : "";
       editorEl.value = markdown;
       if (markdown) localStorage.setItem("documento_editor", markdown);
