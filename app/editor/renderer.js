@@ -9,8 +9,10 @@ PEditor.renderer = {
         <div class="button-row">
           <button id="btnAgregarSeccion" class="btn">Agregar sección</button>
           <button id="btnGuardarEditor" class="btn">Guardar editor</button>
+          <button id="btnLimpiarEditor" class="btn btn-peligro">Limpiar editor</button>
         </div>
         <div id="estadoEditor" class="card"></div>
+        <div id="editorFuente" class="muted"></div>
       </div>
       <div class="card">
         <h3>Documento base</h3>
