@@ -81,6 +81,19 @@ function eliminarReferenciaPlataforma(index) {
   renderReferencias();
 }
 
+function limpiarReferenciasPlataforma() {
+  localStorage.removeItem("referencias");
+  if (window.CADState) {
+    window.CADState.referencias = [];
+  }
+  if (window.CADCore?.storage?.guardarEstadoLocal) {
+    CADCore.storage.guardarEstadoLocal(window.CADState);
+  }
+  console.log("REFERENCIAS CLEARED");
+  console.log("REFERENCIAS CURRENT:", []);
+  renderReferencias();
+}
+
 function insertarReferenciasEnDocumento() {
   const lista = obtenerReferenciasPlataforma();
   if (!lista.length || !window.CADState) return;
@@ -132,6 +145,7 @@ function renderReferencias() {
         <input id="refDoi" type="text" placeholder="DOI / URL" />
         <button id="btnAgregarReferencia" class="btn">Agregar referencia</button>
         <button id="btnInsertarReferencias" class="btn">Insertar en documento</button>
+        <button id="btnLimpiarReferencias" class="btn btn-peligro">Limpiar referencias</button>
       </div>
       <div id="estadoReferencias" class="card"></div>
       <div id="listaReferencias"></div>
@@ -145,7 +159,7 @@ function renderReferencias() {
 
   const listEl = cont.querySelector("#listaReferencias");
   if (!lista.length) {
-    listEl.innerHTML = "<p class=\"muted\">No hay referencias registradas.</p>";
+    listEl.innerHTML = "<p class=\"muted\">No hay referencias guardadas</p>";
   } else {
     lista.forEach((ref, index) => {
       const card = document.createElement("div");
@@ -191,6 +205,10 @@ function renderReferencias() {
     setEstado("Referencia agregada", "estado-ok");
   });
   cont.querySelector("#btnInsertarReferencias").addEventListener("click", insertarReferenciasEnDocumento);
+  cont.querySelector("#btnLimpiarReferencias").addEventListener("click", () => {
+    limpiarReferenciasPlataforma();
+    setEstado("Referencias limpiadas correctamente", "estado-ok");
+  });
 
   const btnCitas = cont.querySelector("#btnGenerarCitasAPA");
   const listaCitas = cont.querySelector("#listaCitasAPA");
