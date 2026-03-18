@@ -35,7 +35,7 @@ function renderMarcoTeorico() {
       localStorage.setItem("marco_teorico", texto);
       window.appendDocumentoEditor && window.appendDocumentoEditor(texto);
       renderPreview(texto);
-      console.log("MARCO TEORICO LENGTH:", texto.length);
+      console.log("MARCO LENGTH:", texto.length);
       setEstado("Marco teórico generado correctamente", "estado-ok");
     } catch (e) {
       setEstado("Error", "estado-error");
