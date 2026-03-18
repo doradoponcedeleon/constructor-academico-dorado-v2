@@ -60,18 +60,29 @@ function renderCitasAPA() {
   const debugBox = cont.querySelector("#debugCitas");
   const setEstado = (msg, type) => window.setEstado(estado, msg, type);
 
-  const construirRef = () => ({
-    autor: (document.getElementById("citaAutor")?.value || "").trim(),
-    anio: (document.getElementById("citaAnio")?.value || "").trim(),
-    titulo: (document.getElementById("citaTitulo")?.value || "").trim(),
-    revista: (document.getElementById("citaFuente")?.value || "").trim(),
-    editorial: (document.getElementById("citaEditorial")?.value || "").trim(),
-    doi: (document.getElementById("citaDoi")?.value || "").trim()
-  });
+  const construirRef = () => {
+    const selectors = {
+      autor: "#citaAutor",
+      anio: "#citaAnio",
+      titulo: "#citaTitulo",
+      fuente: "#citaFuente",
+      editorial: "#citaEditorial",
+      url: "#citaDoi"
+    };
+    console.log("APA SELECTORS:", selectors);
+    const autor = (cont.querySelector(selectors.autor)?.value || "").trim();
+    const anio = (cont.querySelector(selectors.anio)?.value || "").trim();
+    const titulo = (cont.querySelector(selectors.titulo)?.value || "").trim();
+    const revista = (cont.querySelector(selectors.fuente)?.value || "").trim();
+    const editorial = (cont.querySelector(selectors.editorial)?.value || "").trim();
+    const doi = (cont.querySelector(selectors.url)?.value || "").trim();
+    return { autor, anio, titulo, revista, editorial, doi };
+  };
 
   cont.querySelector("#btnGenerarCita").addEventListener("click", () => {
     setEstado("Generando...", "estado-warn");
     const ref = construirRef();
+    console.log("APA BUTTON CLICKED");
     console.log("APA INPUT VALUES:", {
       autor: ref.autor,
       anio: ref.anio,
