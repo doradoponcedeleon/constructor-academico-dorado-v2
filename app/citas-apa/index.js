@@ -1,10 +1,12 @@
 function generarCitaAPARapida(ref) {
   if (typeof generarReferenciaAPA === "function") return generarReferenciaAPA(ref);
-  const autor = ref.autor || "Autor";
-  const anio = ref.anio || "s.f.";
-  const titulo = ref.titulo || "Título";
-  const fuente = ref.fuente || "";
-  return `${autor} (${anio}). ${titulo}. ${fuente}`.trim();
+  const autor = ref.authors || ref.autor || "Autor";
+  const anio = ref.year || ref.anio || "s.f.";
+  const titulo = ref.title || ref.titulo || "Título";
+  const fuente = ref.source || ref.revista || ref.fuente || "";
+  const url = ref.url || ref.doi || "";
+  const finalFuente = [fuente, url].filter(Boolean).join(". ");
+  return `${autor} (${anio}). ${titulo}. ${finalFuente}`.trim();
 }
 
 function guardarCitaEnReferencias(ref) {
@@ -86,11 +88,18 @@ function renderCitasAPA() {
     setEstado("Generando...", "estado-warn");
     try {
       const refs = safeGetJSON("referencias", []);
+      console.log("REFERENCIAS:", refs);
+      if (!refs.length) {
+        if (preview) preview.innerHTML = "<p class=\"muted\">No hay referencias disponibles</p>";
+        setEstado("No hay referencias disponibles", "estado-warn");
+        return;
+      }
       const citas = refs.map((ref) => generarCitaAPARapida(ref));
       localStorage.setItem("citas_apa", JSON.stringify(citas));
+      console.log("APA GENERADAS:", citas);
       const safe = citas.join("\n").replace(/</g, "&lt;").replace(/>/g, "&gt;");
       if (preview) preview.innerHTML = `<pre>${safe}</pre>`;
-      setEstado("Guardado correctamente", "estado-ok");
+      setEstado("Citas APA generadas correctamente", "estado-ok");
     } catch (e) {
       setEstado("Error", "estado-error");
     }

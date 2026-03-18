@@ -47,7 +47,7 @@ function renderBuscadorPapers() {
         <span class="muted">${escapeHTML(r.doi || r.url || "")}</span>
         <p>${escapeHTML(resumen)}</p>
         <div class="button-row">
-          <button class="btn" data-add="${idx}">Agregar referencia</button>
+          <button class="btn" data-add="${idx}">Agregar a referencias</button>
           <button class="btn" data-apa="${idx}">Citar APA</button>
           <button class="btn" data-send="${idx}">Enviar al editor</button>
         </div>
