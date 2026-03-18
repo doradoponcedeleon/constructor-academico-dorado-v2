@@ -129,22 +129,23 @@ function generarDocumento() {
       "# Documento base",
       "",
       "## Tema",
-      tema || "Tema no especificado",
+      tema,
       "",
       "## Problema",
-      problema || "No se especificó el problema.",
+      problema,
       "",
-      "## Ideas",
-      ideas || "No se especificaron ideas.",
+      "## Ideas principales",
+      ideas,
       "",
-      "## Conceptos",
-      conceptos || "No se especificaron conceptos.",
+      "## Conceptos clave",
+      conceptos,
       "",
-      "## Objetivos",
-      objetivos || "No se especificaron objetivos."
+      "## Objetivo general",
+      objetivos
     ].join("\n");
     localStorage.setItem("documento_base", documento);
     mostrarEstadoMotorIdeas("Documento base generado");
+    console.log("DOCUMENTO BASE COMPLETO:", documento);
   } catch (e) {
     mostrarEstadoMotorIdeas("Error al generar");
   }

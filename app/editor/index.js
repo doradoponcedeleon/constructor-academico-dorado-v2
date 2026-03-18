@@ -13,21 +13,13 @@ function renderEditor() {
   if (!window.CADState) return;
   if (!window.CADState.editor) window.CADState.editor = { secciones: [] };
 
-  if (!window.CADState.editor.secciones.length) {
+  const docEditor = localStorage.getItem("documento_editor") || "";
+  const docBaseRaw = localStorage.getItem("documento_base") || "";
+
+  if (!docEditor && !docBaseRaw && !window.CADState.editor.secciones.length) {
     window.CADState.editor.secciones = [{ titulo: "Introducción", contenido: "" }];
   }
   PEditor.sections.lista = window.CADState.editor.secciones;
-
-  const docEditor = localStorage.getItem("documento_editor") || "";
-  const docBaseRaw = localStorage.getItem("documento_base") || "";
-  const docBase = window.parseDocumentoBase ? window.parseDocumentoBase() : null;
-  if (!docEditor && docBase && typeof window.documentoBaseToSecciones === "function") {
-    const seccionesBase = window.documentoBaseToSecciones(docBase);
-    if (seccionesBase.length) {
-      window.CADState.editor.secciones = seccionesBase;
-      PEditor.sections.lista = seccionesBase;
-    }
-  }
 
   PEditor.renderer.render(cont, PEditor.sections.lista);
 
@@ -41,10 +33,6 @@ function renderEditor() {
     } else if (docBaseRaw) {
       editorEl.value = docBaseRaw;
       localStorage.setItem("documento_editor", docBaseRaw);
-    } else if (docBase) {
-      const markdown = window.documentoBaseToMarkdown ? window.documentoBaseToMarkdown(docBase) : "";
-      editorEl.value = markdown;
-      if (markdown) localStorage.setItem("documento_editor", markdown);
     }
   }
 
