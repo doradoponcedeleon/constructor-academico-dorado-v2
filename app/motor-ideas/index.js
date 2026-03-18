@@ -143,16 +143,16 @@ function generarDocumento() {
       "## Objetivo general",
       objetivos
     ].join("\n");
-    localStorage.setItem("documento_base", documento);
-    mostrarEstadoMotorIdeas("Documento base generado");
-    console.log("DOCUMENTO BASE COMPLETO:", documento);
+    localStorage.setItem("motor_ideas_preview", documento);
+    mostrarEstadoMotorIdeas("Documento generado (preview)");
+    console.log("PREVIEW GENERATED");
   } catch (e) {
     mostrarEstadoMotorIdeas("Error al generar");
   }
 
   const resultadoDiv = document.getElementById("resultadoMotor");
   if (resultadoDiv) {
-    const doc = localStorage.getItem("documento_base") || "";
+    const doc = localStorage.getItem("motor_ideas_preview") || "";
     const safeDoc = doc
       .replace(/</g, "&lt;")
       .replace(/>/g, "&gt;");
@@ -167,16 +167,18 @@ function generarDocumento() {
 }
 
 function aplicarEditor() {
-  const doc = localStorage.getItem("documento_base") || "";
+  const doc = localStorage.getItem("motor_ideas_preview") || "";
   if (!doc) {
     mostrarEstadoMotorIdeas("No existe contenido para aplicar");
     return;
   }
   try {
     mostrarEstadoMotorIdeas("Generando...");
+    console.log("APPLIED TO EDITOR");
     localStorage.setItem("documento_editor", doc);
+    localStorage.setItem("documento_base", doc);
     sincronizarEditorConDocumentoBase(doc);
-    mostrarEstadoMotorIdeas("Enviado al editor");
+    mostrarEstadoMotorIdeas("Documento aplicado al editor");
   } catch (e) {
     mostrarEstadoMotorIdeas("Error al generar");
   }
@@ -217,7 +219,7 @@ function renderMotorIdeas() {
     };
   }
 
-  const doc = localStorage.getItem("documento_base");
+  const doc = localStorage.getItem("motor_ideas_preview");
   if (doc) {
     const resultadoDiv = document.getElementById("resultadoMotor");
     if (resultadoDiv) {

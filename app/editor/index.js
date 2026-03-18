@@ -14,18 +14,18 @@ function renderEditor() {
   if (!window.CADState.editor) window.CADState.editor = { secciones: [] };
 
   const docEditor = localStorage.getItem("documento_editor") || "";
-  const docBaseRaw = localStorage.getItem("documento_base") || "";
+  const docBaseRaw = "";
   const legacySecciones = Array.isArray(window.CADState.editor.secciones)
     ? window.CADState.editor.secciones
     : [];
   const fuente = docEditor
     ? "documento_editor"
-    : (docBaseRaw ? "documento_base" : (legacySecciones.length ? "secciones_editor (legacy)" : "ninguna"));
+    : (legacySecciones.length ? "secciones_editor (legacy)" : "ninguna");
 
-  if (!docEditor && !docBaseRaw && !legacySecciones.length) {
+  if (!docEditor && !legacySecciones.length) {
     window.CADState.editor.secciones = [];
   }
-  if (docEditor || docBaseRaw) {
+  if (docEditor) {
     window.CADState.editor.secciones = [];
   }
   PEditor.sections.lista = window.CADState.editor.secciones;
@@ -42,10 +42,6 @@ function renderEditor() {
       editorEl.value = docEditor;
       window.setEstado(estado, "Editor cargado desde documento_editor", "estado-ok");
       console.log("EDITOR CARGADO DESDE:", "documento_editor");
-    } else if (docBaseRaw) {
-      editorEl.value = docBaseRaw;
-      localStorage.setItem("documento_editor", docBaseRaw);
-      console.log("EDITOR CARGADO DESDE:", "documento_base");
     } else {
       editorEl.value = "";
     }
