@@ -39,75 +39,69 @@ function renderCitasAPA() {
           <option value="libro">Libro</option>
           <option value="web">Web</option>
         </select>
-        <input id="citaAutor" type="text" placeholder="Autor(es)" />
-        <input id="citaAnio" type="text" placeholder="Año" />
-        <input id="citaTitulo" type="text" placeholder="Título" />
-        <input id="citaFuente" type="text" placeholder="Revista / Libro / Sitio" />
-        <input id="citaEditorial" type="text" placeholder="Editorial" />
-        <input id="citaDoi" type="text" placeholder="DOI / URL" />
-        <button id="btnGenerarCita" class="btn">Generar cita APA</button>
-        <button id="btnGuardarCita" class="btn">Guardar en referencias</button>
-        <button id="btnGenerarCitasRef" class="btn">Generar citas desde referencias</button>
+        <input id="apa-autor" type="text" placeholder="Autor(es)" />
+        <input id="apa-anio" type="text" placeholder="Año" />
+        <input id="apa-titulo" type="text" placeholder="Título" />
+        <input id="apa-fuente" type="text" placeholder="Revista / Libro / Sitio" />
+        <input id="apa-editorial" type="text" placeholder="Editorial" />
+        <input id="apa-url" type="text" placeholder="DOI / URL" />
+        <button id="btn-generar-apa" class="btn">Generar cita APA</button>
+        <button id="btn-guardar-apa" class="btn">Guardar en referencias</button>
+        <button id="btn-generar-apa-refs" class="btn">Generar citas desde referencias</button>
       </div>
-      <div id="debugCitas" class="card"></div>
-      <div id="estadoCitas" class="card"></div>
-      <div id="previewCita" class="card"></div>
+      <div id="debug-apa" class="card"></div>
+      <div id="estado-apa" class="card"></div>
+      <div id="resultado-apa" class="card"></div>
     </div>
   `;
 
-  const preview = cont.querySelector("#previewCita");
-  const estado = cont.querySelector("#estadoCitas");
-  const debugBox = cont.querySelector("#debugCitas");
+  const preview = cont.querySelector("#resultado-apa");
+  const estado = cont.querySelector("#estado-apa");
+  const debugBox = cont.querySelector("#debug-apa");
   const setEstado = (msg, type) => window.setEstado(estado, msg, type);
 
   const construirRef = () => {
     const selectors = {
-      autor: "#citaAutor",
-      anio: "#citaAnio",
-      titulo: "#citaTitulo",
-      fuente: "#citaFuente",
-      editorial: "#citaEditorial",
-      url: "#citaDoi"
+      autor: "#apa-autor",
+      anio: "#apa-anio",
+      titulo: "#apa-titulo",
+      fuente: "#apa-fuente",
+      editorial: "#apa-editorial",
+      url: "#apa-url"
     };
     console.log("APA SELECTORS:", selectors);
-    const logInputs = (root, label) => {
-      const inputs = root.querySelectorAll("input, textarea");
-      console.log(`APA INPUTS SCAN (${label}):`);
-      inputs.forEach((el) => {
-        console.log(el.placeholder, el.id, el.name, el.value);
-      });
-      return inputs;
+
+    const inputs = document.querySelectorAll("input, textarea");
+    console.log("APA INPUTS SCAN (global):");
+    inputs.forEach((el) => {
+      console.log(el.placeholder, el.id, el.name, el.value);
+    });
+
+    const matches = {
+      autor: [],
+      anio: [],
+      titulo: []
     };
+    inputs.forEach((el) => {
+      const value = (el.value || "").trim();
+      if (!value) return;
+      if (value.includes("Perez")) matches.autor.push({ id: el.id, name: el.name, placeholder: el.placeholder, value });
+      if (value.includes("2020")) matches.anio.push({ id: el.id, name: el.name, placeholder: el.placeholder, value });
+      if (value.includes("IA")) matches.titulo.push({ id: el.id, name: el.name, placeholder: el.placeholder, value });
+    });
+    console.log("APA MATCHES:", matches);
 
-    const scopedInputs = logInputs(cont, "scoped");
-    let autor = (cont.querySelector(selectors.autor)?.value || "").trim();
-    let anio = (cont.querySelector(selectors.anio)?.value || "").trim();
-    let titulo = (cont.querySelector(selectors.titulo)?.value || "").trim();
-    let revista = (cont.querySelector(selectors.fuente)?.value || "").trim();
-    let editorial = (cont.querySelector(selectors.editorial)?.value || "").trim();
-    let doi = (cont.querySelector(selectors.url)?.value || "").trim();
-
-    if (!autor || !anio || !titulo) {
-      const allInputs = logInputs(document, "global");
-      allInputs.forEach((el) => {
-        const ph = (el.placeholder || "").toLowerCase();
-        const name = (el.name || "").toLowerCase();
-        const id = (el.id || "").toLowerCase();
-        const value = (el.value || "").trim();
-        if (!value) return;
-        if (!autor && (ph.includes("autor") || name.includes("autor") || id.includes("autor"))) autor = value;
-        if (!anio && (ph.includes("año") || ph.includes("anio") || name.includes("anio") || id.includes("anio"))) anio = value;
-        if (!titulo && (ph.includes("título") || ph.includes("titulo") || name.includes("titulo") || id.includes("titulo"))) titulo = value;
-        if (!revista && (ph.includes("revista") || ph.includes("libro") || ph.includes("sitio") || name.includes("fuente") || id.includes("fuente"))) revista = value;
-        if (!editorial && (ph.includes("editorial") || name.includes("editorial") || id.includes("editorial"))) editorial = value;
-        if (!doi && (ph.includes("doi") || ph.includes("url") || name.includes("doi") || id.includes("doi"))) doi = value;
-      });
-    }
+    const autor = (cont.querySelector(selectors.autor) || document.getElementById("apa-autor"))?.value?.trim() || "";
+    const anio = (cont.querySelector(selectors.anio) || document.getElementById("apa-anio"))?.value?.trim() || "";
+    const titulo = (cont.querySelector(selectors.titulo) || document.getElementById("apa-titulo"))?.value?.trim() || "";
+    const revista = (cont.querySelector(selectors.fuente) || document.getElementById("apa-fuente"))?.value?.trim() || "";
+    const editorial = (cont.querySelector(selectors.editorial) || document.getElementById("apa-editorial"))?.value?.trim() || "";
+    const doi = (cont.querySelector(selectors.url) || document.getElementById("apa-url"))?.value?.trim() || "";
 
     return { autor, anio, titulo, revista, editorial, doi };
   };
 
-  cont.querySelector("#btnGenerarCita").addEventListener("click", () => {
+  cont.querySelector("#btn-generar-apa").addEventListener("click", () => {
     setEstado("Generando...", "estado-warn");
     const ref = construirRef();
     console.log("APA BUTTON CLICKED");
@@ -126,7 +120,7 @@ function renderCitasAPA() {
     setEstado("Guardado correctamente", "estado-ok");
   });
 
-  cont.querySelector("#btnGuardarCita").addEventListener("click", () => {
+  cont.querySelector("#btn-guardar-apa").addEventListener("click", () => {
     setEstado("Generando...", "estado-warn");
     const ref = construirRef();
     guardarCitaEnReferencias(ref);
@@ -134,7 +128,7 @@ function renderCitasAPA() {
     setEstado("Guardado correctamente", "estado-ok");
   });
 
-  cont.querySelector("#btnGenerarCitasRef").addEventListener("click", () => {
+  cont.querySelector("#btn-generar-apa-refs").addEventListener("click", () => {
     setEstado("Generando...", "estado-warn");
     try {
       const refs = safeGetJSON("referencias", []);
