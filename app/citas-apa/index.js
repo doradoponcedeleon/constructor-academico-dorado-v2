@@ -10,15 +10,14 @@ function generarCitaAPARapida(ref) {
 }
 
 function guardarCitaEnReferencias(ref) {
-  const lista = typeof obtenerReferenciasPlataforma === "function"
-    ? obtenerReferenciasPlataforma()
-    : (JSON.parse(localStorage.getItem("referencias") || "[]"));
-  lista.unshift(ref);
-  if (typeof guardarReferenciasPlataforma === "function") {
-    guardarReferenciasPlataforma(lista);
-  } else {
-    localStorage.setItem("referencias", JSON.stringify(lista));
+  if (!ref.autor || !ref.anio || !ref.titulo) {
+    alert("Faltan datos en la referencia");
+    return;
   }
+  const lista = JSON.parse(localStorage.getItem("referencias") || "[]");
+  lista.push(ref);
+  localStorage.setItem("referencias", JSON.stringify(lista));
+  console.log("Referencia guardada:", ref);
 }
 
 function renderCitasAPA() {
@@ -77,13 +76,9 @@ function renderCitasAPA() {
   cont.querySelector("#btnGuardarCita").addEventListener("click", () => {
     setEstado("Generando...", "estado-warn");
     const ref = construirRef();
-    try {
-      guardarCitaEnReferencias(ref);
-      if (preview) preview.innerHTML = "<p class=\"muted\">Cita guardada en referencias.</p>";
-      setEstado("Guardado correctamente", "estado-ok");
-    } catch (e) {
-      setEstado("Error", "estado-error");
-    }
+    guardarCitaEnReferencias(ref);
+    if (preview) preview.innerHTML = "<p class=\"muted\">Cita guardada en referencias.</p>";
+    setEstado("Guardado correctamente", "estado-ok");
   });
 
   cont.querySelector("#btnGenerarCitasRef").addEventListener("click", () => {
