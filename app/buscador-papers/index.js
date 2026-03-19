@@ -9,6 +9,7 @@ function renderBuscadorPapers() {
       <div class="bitacora-form">
         <input id="bpQuery" type="text" placeholder="Buscar papers" />
         <button id="btnBuscarPapers" class="btn">Buscar</button>
+        <button id="btnLimpiarPapers" class="btn btn-peligro">Limpiar historial</button>
       </div>
       <div id="estadoBuscador" class="card"></div>
       <div id="listaPapers"></div>
@@ -154,6 +155,20 @@ function renderBuscadorPapers() {
       setEstado("Error", "estado-error");
       if (window.logCAD) logCAD("buscador-papers error", e);
     }
+  });
+
+  cont.querySelector("#btnLimpiarPapers").addEventListener("click", () => {
+    const ok = confirm("¿Deseas borrar el historial de papers?");
+    if (!ok) return;
+    if (window.CADState?.buscadorPapers) {
+      delete window.CADState.buscadorPapers;
+    }
+    if (window.CADCore?.storage?.guardarEstadoLocal) {
+      CADCore.storage.guardarEstadoLocal(window.CADState || {});
+    }
+    console.log("Historial de papers eliminado");
+    if (listaEl) listaEl.innerHTML = "<p class=\"muted\">Sin resultados.</p>";
+    setEstado("Historial de papers eliminado", "estado-ok");
   });
 
   if (window.CADState?.buscadorPapers?.resultados) {
