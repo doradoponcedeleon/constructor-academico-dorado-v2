@@ -172,6 +172,9 @@ function renderBuscadorPapers() {
   });
 
   if (window.CADState?.buscadorPapers?.resultados) {
+    const qPrev = window.CADState.buscadorPapers.query || "";
+    const input = cont.querySelector("#bpQuery");
+    if (input && qPrev) input.value = qPrev;
     aplicarResultados(window.CADState.buscadorPapers.resultados, { fuente: window.CADState.buscadorPapers.fuente });
   }
 }

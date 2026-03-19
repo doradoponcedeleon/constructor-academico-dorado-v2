@@ -131,7 +131,10 @@ function buscarPapersDemo(query) {
     p.autores.toLowerCase().includes(q) ||
     p.resumen.toLowerCase().includes(q)
   );
-  return { resultados: filtrados.length ? filtrados : muestra, fuente: "demo" };
+  if (!q) {
+    return { resultados: muestra, fuente: "demo" };
+  }
+  return { resultados: filtrados, fuente: "demo" };
 }
 
 async function fetchJsonConTimeout(url, options = {}, timeoutMs = 12000) {
