@@ -132,151 +132,145 @@ function construirParrafoAcademicoBase({ idea, explicacion, aplicacion, ejemplo,
 
 function buildParagraphBase(context, indice) {
   const { tema, problema, conceptos, seccion } = context;
-  const problemaClave = "el uso inadecuado de IA, la dependencia y la pérdida de pensamiento crítico";
-  const ejemplos = [
-    "por ejemplo, un estudiante que utiliza ChatGPT solo para copiar respuestas sin analizar fuentes",
-    "en plataformas de aprendizaje adaptativo que ajustan ejercicios pero no explican el razonamiento",
-    "cuando la evaluación automatizada se usa sin revisión crítica del proceso de aprendizaje",
-    "en cursos universitarios donde los estudiantes delegan la argumentación a la IA"
-  ];
-  const ejemplo = ejemplos[indice % ejemplos.length];
+  const ejemplo = seleccionarEjemploBase(conceptos, indice);
+  const problemaClave = resumenProblemaBase(problema);
   const v = indice % 3;
 
   if (seccion === "introduccion") {
     if (v === 0) {
       return construirParrafoAcademicoBase({
         idea: `El marco teórico de **${tema}** define el conjunto de categorías que permiten interpretar el fenómeno de estudio.`,
-        explicacion: "No se limita a enumerar conceptos, sino que explica cómo operan y por qué son pertinentes en educación superior.",
-        aplicacion: "En universidades, la IA interviene en plataformas, tutorías y evaluación, configurando nuevas formas de estudiar.",
+        explicacion: "No se limita a enumerar conceptos, sino que explica cómo operan y por qué son pertinentes en el campo investigado.",
+        aplicacion: "En el contexto disciplinar, estos conceptos orientan la interpretación y delimitan el alcance del análisis.",
         ejemplo: `Esto se observa ${ejemplo}.`,
-        conexion: `Por ello, el análisis se vincula con ${problema.toLowerCase()} y con ${problemaClave}.`
+        conexion: `Por ello, el análisis se vincula con ${problemaClave}.`
       });
     }
     if (v === 1) {
       return construirParrafoAcademicoBase({
-        idea: `La introducción del marco teórico sitúa **${tema}** dentro de un campo de discusión pedagógica y tecnológica.`,
-        explicacion: "Su propósito es explicar por qué la IA modifica la manera en que se aprende y se evalúa en educación superior.",
-        aplicacion: "En el ámbito universitario, esto implica revisar cómo se usan herramientas como ChatGPT y sistemas adaptativos.",
+        idea: `La introducción del marco teórico sitúa **${tema}** dentro de un campo de discusión académica pertinente.`,
+        explicacion: "Su propósito es explicar por qué este tema requiere un fundamento conceptual sólido.",
+        aplicacion: "En el ámbito de estudio, esto implica revisar categorías clave, enfoques y antecedentes relevantes.",
         ejemplo: `Se evidencia ${ejemplo}.`,
-        conexion: `Estas prácticas hacen visible ${problemaClave} y el riesgo de uso superficial.`
+        conexion: `Estas prácticas hacen visible ${problemaClave} y su impacto en la investigación.`
       });
     }
     return construirParrafoAcademicoBase({
-      idea: "Este capítulo establece la relación entre teoría educativa y transformación digital en universidades.",
-      explicacion: "La teoría define criterios para distinguir aprendizaje profundo de respuestas automáticas.",
-      aplicacion: "En educación superior, esa distinción se aplica a tareas, evaluaciones y uso de plataformas inteligentes.",
+      idea: "Este capítulo establece la relación entre teoría y evidencia empírica en el campo de estudio.",
+      explicacion: "La teoría define criterios para interpretar conceptos y contrastar enfoques.",
+      aplicacion: "En el análisis, esa distinción se aplica a las variables y dimensiones centrales del tema.",
       ejemplo: `Un caso ilustrativo aparece ${ejemplo}.`,
-      conexion: `Así se conecta el marco con ${problema.toLowerCase()} y con ${problemaClave}.`
+      conexion: `Así se conecta el marco con ${problemaClave}.`
     });
   }
 
   if (seccion === "antecedentes") {
     if (v === 0) {
       return construirParrafoAcademicoBase({
-        idea: "La IA en educación surge con la transformación digital y la necesidad de ampliar el acceso al conocimiento universitario.",
-        explicacion: "La evolución va desde repositorios digitales a modelos que analizan datos de aprendizaje.",
-        aplicacion: "En educación superior, esto habilita personalización, alertas tempranas y automatización de feedback.",
+        idea: `Los antecedentes de **${tema}** muestran la evolución del campo y los debates que han consolidado su estudio.`,
+        explicacion: "La literatura describe transiciones conceptuales y metodológicas que permiten comprender el fenómeno.",
+        aplicacion: "En el ámbito investigado, estos antecedentes orientan el diseño de categorías y enfoques analíticos.",
         ejemplo: `Un caso típico ocurre ${ejemplo}.`,
-        conexion: `Esto revela ${problemaClave} cuando el uso se vuelve superficial.`
+        conexion: `Esto revela cómo ${problemaClave} se expresa en la práctica.`
       });
     }
     if (v === 1) {
       return construirParrafoAcademicoBase({
-        idea: "Los antecedentes muestran un tránsito desde plataformas administrativas hacia sistemas capaces de interpretar trayectorias de estudio.",
-        explicacion: "Este tránsito fue impulsado por la disponibilidad de datos y por la demanda de seguimiento académico.",
-        aplicacion: "En universidades, la IA comenzó a orientar tutorías y a anticipar riesgos de bajo rendimiento.",
+        idea: "Los antecedentes también evidencian cambios en la manera de definir el problema y sus variables clave.",
+        explicacion: "Estos cambios se explican por nuevas perspectivas teóricas y por la diversificación de fuentes empíricas.",
+        aplicacion: "En el contexto estudiado, esto se traduce en ajustes en los criterios de análisis.",
         ejemplo: `Se aprecia ${ejemplo}.`,
-        conexion: `Sin acompañamiento pedagógico, estas herramientas pueden reforzar ${problemaClave}.`
+        conexion: `Sin un marco robusto, ${problemaClave} tiende a reproducirse.`
       });
     }
     return construirParrafoAcademicoBase({
-      idea: "La expansión de herramientas generativas marcó una fase reciente en la historia de la IA educativa.",
-      explicacion: "La posibilidad de producir textos y respuestas rápidas modificó prácticas de estudio y evaluación.",
-      aplicacion: "En educación superior, esto obliga a redefinir criterios de autoría y de aprendizaje significativo.",
+      idea: "Una fase reciente en los antecedentes muestra la consolidación de enfoques críticos y comparativos.",
+      explicacion: "La literatura actual enfatiza la necesidad de integrar dimensiones contextuales y epistemológicas.",
+      aplicacion: "En el estudio, esto obliga a revisar supuestos y definir límites conceptuales claros.",
       ejemplo: `Esto ocurre ${ejemplo}.`,
-      conexion: `De ahí que ${problema.toLowerCase()} sea un problema central en universidades.`
+      conexion: `De ahí que ${problemaClave} sea un problema central en el campo.`
     });
   }
 
   if (seccion === "fundamentos") {
     if (v === 0) {
       return construirParrafoAcademicoBase({
-        idea: "La inteligencia artificial aprende patrones a partir de datos y genera respuestas con base en modelos entrenados.",
-        explicacion: "Su funcionamiento se apoya en algoritmos que ajustan parámetros para reconocer regularidades.",
-        aplicacion: "En universidades, esto se usa para recomendar recursos, evaluar actividades y apoyar tutorías.",
+        idea: `Los fundamentos conceptuales de **${tema}** describen los elementos que estructuran el fenómeno.`,
+        explicacion: "Estos fundamentos precisan el significado de los conceptos centrales y sus relaciones.",
+        aplicacion: "En el análisis, permiten delimitar categorías y construir indicadores coherentes.",
         ejemplo: `Se aprecia ${ejemplo}.`,
-        conexion: `Si el uso se limita a copiar respuestas, ${problemaClave} se intensifica.`
+        conexion: `Si no se precisan, ${problemaClave} se intensifica.`
       });
     }
     if (v === 1) {
       return construirParrafoAcademicoBase({
-        idea: "El aprendizaje adaptativo se fundamenta en la lectura continua del desempeño del estudiante.",
-        explicacion: "La IA interpreta errores y aciertos para ajustar contenidos y ritmos.",
-        aplicacion: "En educación superior, esto puede mejorar resultados si el estudiante participa activamente en la ruta propuesta.",
+        idea: "Los conceptos clave actúan como ejes que organizan la comprensión del problema investigado.",
+        explicacion: "Definirlos con claridad evita ambigüedades y fortalece la consistencia del marco.",
+        aplicacion: "En la investigación, esto se refleja en decisiones metodológicas más precisas.",
         ejemplo: `Se observa ${ejemplo}.`,
-        conexion: `Cuando se usa como atajo, el adaptativo pierde sentido y se amplifica ${problemaClave}.`
+        conexion: `Cuando se omiten, se amplifica ${problemaClave}.`
       });
     }
     return construirParrafoAcademicoBase({
-      idea: "La educación digital integra plataformas, interacción en línea y evaluación continua.",
-      explicacion: "No equivale a simple virtualización; implica reconfigurar la relación con el conocimiento.",
-      aplicacion: "En universidades, conviven aulas presenciales con recursos digitales inteligentes.",
+      idea: "La fundamentación conceptual también conecta el tema con teorías y enfoques previos.",
+      explicacion: "Esta conexión ayuda a explicar el fenómeno desde perspectivas complementarias.",
+      aplicacion: "En el estudio, permite justificar la selección de modelos analíticos.",
       ejemplo: `Esto ocurre ${ejemplo}.`,
-      conexion: `Si el estudiante delega el razonamiento a la IA, ${problemaClave} se vuelve más visible.`
+      conexion: `Si no se integra, ${problemaClave} se vuelve más visible.`
     });
   }
 
   if (seccion === "modelos") {
     if (v === 0) {
       return construirParrafoAcademicoBase({
-        idea: "Los modelos del aprendizaje orientan cómo debe usarse la IA para fomentar comprensión y no solo resultados.",
-        explicacion: "Constructivismo, conductismo y cognitivismo aportan criterios distintos sobre el proceso educativo.",
-        aplicacion: "En universidades, estos enfoques guían el diseño de sistemas adaptativos y de evaluación.",
+        idea: "Los enfoques y modelos teóricos orientan la interpretación del fenómeno y sus variables.",
+        explicacion: "Cada modelo aporta criterios distintos sobre causalidad, contexto y agencia.",
+        aplicacion: "En la investigación, estos enfoques guían el análisis y la discusión de resultados.",
         ejemplo: `Esto se ve ${ejemplo}.`,
         conexion: `La falta de alineación con estos modelos favorece ${problemaClave}.`
       });
     }
     if (v === 1) {
       return construirParrafoAcademicoBase({
-        idea: "Desde el constructivismo, la IA debe promover exploración y reflexión, no respuestas cerradas.",
-        explicacion: "El aprendizaje se construye cuando el estudiante confronta ideas y reorganiza significados.",
-        aplicacion: "En universidades, esto exige que las herramientas inteligentes estimulen análisis crítico.",
-        ejemplo: "Si el estudiante usa ChatGPT sin contrastar fuentes, pierde la construcción activa del conocimiento.",
-        conexion: `Esa pérdida refuerza ${problemaClave}.`
+        idea: "Un enfoque interpretativo prioriza la comprensión del significado que los actores atribuyen al fenómeno.",
+        explicacion: "Este enfoque enfatiza la construcción social de la realidad y la influencia del contexto.",
+        aplicacion: "En el estudio, permite analizar discursos, prácticas y sentidos asociados al tema.",
+        ejemplo: `Esto se aprecia ${ejemplo}.`,
+        conexion: `Esa lectura ayuda a explicar ${problemaClave}.`
       });
     }
     return construirParrafoAcademicoBase({
-      idea: "El conductismo y el cognitivismo ofrecen marcos complementarios para entender la retroalimentación automatizada.",
-      explicacion: "Mientras el primero enfatiza el refuerzo, el segundo prioriza procesos internos y metacognición.",
-      aplicacion: "En educación superior, la IA debe equilibrar feedback inmediato con reflexión sobre el razonamiento.",
+      idea: "Un enfoque crítico analiza relaciones de poder, normas institucionales y efectos no intencionados.",
+      explicacion: "Este marco aporta criterios para evaluar impactos y límites de las prácticas estudiadas.",
+      aplicacion: "En el análisis, permite contrastar beneficios con riesgos del fenómeno.",
       ejemplo: `Esto se aprecia ${ejemplo}.`,
-      conexion: `Si no se equilibra, se normaliza ${problemaClave}.`
+      conexion: `Si no se evalúa críticamente, se normaliza ${problemaClave}.`
     });
   }
 
   if (seccion === "investigaciones") {
     if (v === 0) {
       return construirParrafoAcademicoBase({
-        idea: "Las investigaciones recientes describen usos de IA para personalizar aprendizaje y automatizar evaluación en universidades.",
-        explicacion: "Los estudios reportan mejoras, pero también alertan sobre dependencia y sesgos.",
-        aplicacion: "En educación superior, estos hallazgos orientan políticas de uso responsable.",
+        idea: `Las investigaciones recientes sobre **${tema}** describen hallazgos y tendencias del campo.`,
+        explicacion: "Los estudios reportan avances, pero también señalan límites metodológicos.",
+        aplicacion: "En la práctica investigativa, estos hallazgos orientan ajustes de diseño y delimitación.",
         ejemplo: `Una evidencia cotidiana ocurre ${ejemplo}.`,
         conexion: `Estos resultados refuerzan ${problemaClave} como desafío vigente.`
       });
     }
     if (v === 1) {
       return construirParrafoAcademicoBase({
-        idea: "La literatura sobre IA educativa destaca avances en analítica del aprendizaje y seguimiento continuo.",
-        explicacion: "Estos enfoques permiten intervenir antes de que aparezcan fallas de rendimiento.",
-        aplicacion: "En universidades, esto se traduce en tutorías y acompañamientos personalizados.",
+        idea: "La literatura destaca divergencias en métodos, unidades de análisis y enfoques teóricos.",
+        explicacion: "Estas divergencias muestran la complejidad del fenómeno y la necesidad de triangulación.",
+        aplicacion: "En el estudio, esto implica justificar la estrategia metodológica elegida.",
         ejemplo: `Se observa ${ejemplo}.`,
-        conexion: `Sin embargo, si el estudiante solo copia respuestas, ${problemaClave} persiste.`
+        conexion: `Sin esta justificación, ${problemaClave} persiste.`
       });
     }
     return construirParrafoAcademicoBase({
-      idea: "Los estudios también discuten riesgos éticos y dependencia tecnológica en contextos universitarios.",
-      explicacion: "El uso intensivo de IA puede debilitar autonomía si no se regula.",
-      aplicacion: "En educación superior, esto exige criterios de evaluación que premien razonamiento y no solo resultados.",
+      idea: "Los estudios también discuten implicaciones éticas, institucionales y sociales.",
+      explicacion: "Estas discusiones revelan tensiones entre eficacia, legitimidad y pertinencia.",
+      aplicacion: "En el análisis, esto demanda evaluar consecuencias no previstas.",
       ejemplo: `Esto se evidencia ${ejemplo}.`,
       conexion: `Estos riesgos se vinculan con ${problemaClave} y con ${problema.toLowerCase()}.`
     });
@@ -285,37 +279,37 @@ function buildParagraphBase(context, indice) {
   if (seccion === "comparacion") {
     if (v === 0) {
       return construirParrafoAcademicoBase({
-        idea: "La enseñanza tradicional enfatiza contenidos y evaluación final; la IA introduce seguimiento continuo y personalización.",
-        explicacion: "Esto transforma roles, pero también puede desplazar el razonamiento si no se regula.",
-        aplicacion: "En universidades, la IA debe ser apoyo crítico y no sustituto del aprendizaje.",
+        idea: "La comparación crítica permite identificar diferencias entre enfoques tradicionales y contemporáneos.",
+        explicacion: "Esta comparación revela supuestos metodológicos y conceptuales que afectan el análisis.",
+        aplicacion: "En el estudio, ayuda a justificar decisiones y delimitar alcances.",
         ejemplo: `Esto se evidencia ${ejemplo}.`,
-        conexion: `Sin regulación, ${problemaClave} se profundiza.`
+        conexion: `Sin criterios claros, ${problemaClave} se profundiza.`
       });
     }
     if (v === 1) {
       return construirParrafoAcademicoBase({
-        idea: "La comparación entre enfoques muestra que la IA puede acelerar procesos, pero no garantiza comprensión.",
-        explicacion: "La enseñanza tradicional suele exigir argumentación propia, mientras que la IA facilita respuestas inmediatas.",
-        aplicacion: "En universidades, esto obliga a rediseñar evaluación y seguimiento del aprendizaje.",
+        idea: "La comparación también muestra tensiones entre eficiencia y profundidad analítica.",
+        explicacion: "Un enfoque puede priorizar resultados rápidos, mientras otro privilegia interpretación contextual.",
+        aplicacion: "En la investigación, esto obliga a equilibrar ambas perspectivas.",
         ejemplo: `Se observa ${ejemplo}.`,
         conexion: `Si no se controla, ${problemaClave} se vuelve estructural.`
       });
     }
     return construirParrafoAcademicoBase({
-      idea: "El rol del docente cambia: de transmisor a mediador crítico de herramientas inteligentes.",
-      explicacion: "La IA puede apoyar, pero sin orientación puede reducir el pensamiento crítico.",
-      aplicacion: "En educación superior, esto implica formación docente y reglas claras de uso.",
+      idea: "El análisis comparativo permite establecer criterios de validación y consistencia.",
+      explicacion: "Estos criterios permiten reconocer fortalezas y debilidades de cada enfoque.",
+      aplicacion: "En la discusión, contribuye a plantear recomendaciones fundamentadas.",
       ejemplo: `Esto se evidencia ${ejemplo}.`,
-      conexion: `Sin esa mediación, ${problemaClave} se incrementa.`
+      conexion: `Sin esa evaluación, ${problemaClave} se incrementa.`
     });
   }
 
   return construirParrafoAcademicoBase({
-    idea: "La síntesis teórica integra antecedentes, conceptos y modelos para explicar el uso de IA en universidades.",
-    explicacion: "Este marco permite evaluar impacto, límites y riesgos en la formación.",
-    aplicacion: "En educación superior, se traduce en criterios para medir autonomía y pensamiento crítico.",
+    idea: "La síntesis teórica integra antecedentes, conceptos y modelos para explicar el fenómeno central.",
+    explicacion: "Este marco permite evaluar alcance, límites y condiciones del problema.",
+    aplicacion: "En el estudio, se traduce en criterios para interpretar evidencias y sostener la discusión.",
     ejemplo: `Esto se hace visible ${ejemplo}.`,
-    conexion: `Así se conecta con ${problema.toLowerCase()} y con ${problemaClave}.`
+    conexion: `Así se conecta con ${problemaClave}.`
   });
 }
 
@@ -323,8 +317,8 @@ function generarMarcoTeoricoProfundo(referencias) {
   const refs = (referencias || []).map(normalizarReferenciaMarco);
   const datos = obtenerDatosMotorIdeasBase();
   const tema = datos.tema || "Tema de investigación";
-  const problema = datos.problema || "el uso inadecuado de IA por parte de estudiantes universitarios";
-  const conceptos = datos.conceptos || "tecnología educativa, aprendizaje y evaluación";
+  const problema = datos.problema || "el problema central identificado en el estudio";
+  const conceptos = datos.conceptos || "conceptos clave del tema";
 
   const usados = [];
   const buildSeccion = (id, count) => {
@@ -344,11 +338,11 @@ function generarMarcoTeoricoProfundo(referencias) {
 
   let texto = "## Marco Teórico\n\n";
   texto += `### 1. Introducción del marco teórico\n\n${buildSeccion("introduccion", 3).join("\n\n")}\n\n`;
-  texto += `### 2. Antecedentes de la inteligencia artificial en educación\n\n${buildSeccion("antecedentes", 4).join("\n\n")}\n\n`;
+  texto += `### 2. Antecedentes del campo de estudio\n\n${buildSeccion("antecedentes", 4).join("\n\n")}\n\n`;
   texto += `### 3. Fundamentos conceptuales\n\n${buildSeccion("fundamentos", 4).join("\n\n")}\n\n`;
   texto += `### 4. Enfoques y modelos teóricos\n\n${buildSeccion("modelos", 4).join("\n\n")}\n\n`;
-  texto += `### 5. Investigaciones recientes sobre IA en educación superior\n\n${buildSeccion("investigaciones", 4).join("\n\n")}\n\n`;
-  texto += `### 6. Comparación crítica entre enseñanza tradicional y enseñanza apoyada por IA\n\n${buildSeccion("comparacion", 3).join("\n\n")}\n\n`;
+  texto += `### 5. Investigaciones recientes en el tema\n\n${buildSeccion("investigaciones", 4).join("\n\n")}\n\n`;
+  texto += `### 6. Comparación crítica de enfoques\n\n${buildSeccion("comparacion", 3).join("\n\n")}\n\n`;
   texto += `### 7. Síntesis teórica del estudio\n\n${buildSeccion("sintesis", 3).join("\n\n")}\n\n`;
 
   while (texto.trim().split(/\s+/).filter(Boolean).length < 1800) {
