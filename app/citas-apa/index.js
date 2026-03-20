@@ -209,6 +209,15 @@ function renderCitasAPA() {
       setEstado("Error", "estado-error");
     }
   });
+
+  const prevCitas = safeGetJSON("citas_apa", []);
+  if (preview) {
+    if (prevCitas.length) {
+      preview.innerHTML = `<pre>${escapeHTML(prevCitas.join("\n"))}</pre>`;
+    } else {
+      preview.innerHTML = "<p class=\"muted\">Sin citas APA generadas.</p>";
+    }
+  }
 }
 
 function initCitasAPA() {
