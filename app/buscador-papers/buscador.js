@@ -173,7 +173,7 @@ function normalizarPaperCrossRef(item) {
   };
 }
 
-async function buscarPapersCrossRef(query, rows = 8) {
+async function buscarPapersCrossRef(query, rows = 20) {
   const url = new URL("https://api.crossref.org/works");
   url.searchParams.set("query", query);
   url.searchParams.set("rows", String(rows));
@@ -187,7 +187,7 @@ async function buscarPapersCrossRef(query, rows = 8) {
   return { resultados: items.map(normalizarPaperCrossRef), fuente: "crossref" };
 }
 
-async function buscarPapersSemanticScholarProxy(query, limit = 8) {
+async function buscarPapersSemanticScholarProxy(query, limit = 20) {
   const url = new URL("https://api.semanticscholar.org/graph/v1/paper/search");
   url.searchParams.set("query", query);
   url.searchParams.set("limit", String(limit));

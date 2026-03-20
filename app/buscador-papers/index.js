@@ -23,8 +23,14 @@ function renderBuscadorPapers() {
 
   const aplicarResultados = (resultados, meta = {}) => {
     if (!listaEl) return;
-    if (!resultados.length) {
-      listaEl.innerHTML = "<p class=\"muted\">Sin resultados.</p>";
+    const seleccionados = safeGetJSON("papers_seleccionados", []);
+    const setSeleccionados = new Set(seleccionados);
+    const filtrados = resultados.filter((r) => {
+      const key = `${r.titulo || ""}|${r.anio || ""}`.toLowerCase();
+      return !setSeleccionados.has(key);
+    });
+    if (!filtrados.length) {
+      listaEl.innerHTML = "<p class=\"muted\">Sin resultados nuevos.</p>";
       return;
     }
 
@@ -35,7 +41,7 @@ function renderBuscadorPapers() {
       aviso.innerHTML = "<p class=\"muted\">Resultados demo (sin conexión).</p>";
       listaEl.appendChild(aviso);
     }
-    resultados.forEach((r, idx) => {
+    filtrados.forEach((r, idx) => {
       const card = document.createElement("div");
       card.className = "card";
       const autores = r.autores || "Autor(es) no disponible";
@@ -60,7 +66,7 @@ function renderBuscadorPapers() {
       btn.addEventListener("click", () => {
         setEstado("Generando...", "estado-warn");
         const idx = parseInt(btn.getAttribute("data-add"), 10);
-        const r = resultados[idx];
+        const r = filtrados[idx];
         if (!r) return;
         const lista = typeof obtenerReferenciasPlataforma === "function"
           ? obtenerReferenciasPlataforma()
@@ -71,9 +77,12 @@ function renderBuscadorPapers() {
         } else {
           safeSetJSON("referencias", lista);
         }
-        console.log("REFERENCIAS KEY:", "referencias");
-        console.log("REFERENCIAS FOUND:", lista.length);
-        console.log("REFERENCIAS:", lista);
+        const key = `${r.titulo || ""}|${r.anio || ""}`.toLowerCase();
+        const historial = safeGetJSON("papers_seleccionados", []);
+        if (!historial.includes(key)) {
+          historial.push(key);
+          safeSetJSON("papers_seleccionados", historial);
+        }
         setEstado("Referencia agregada correctamente", "estado-ok");
       });
     });
@@ -82,7 +91,7 @@ function renderBuscadorPapers() {
       btn.addEventListener("click", async () => {
         setEstado("Generando...", "estado-warn");
         const idx = parseInt(btn.getAttribute("data-apa"), 10);
-        const r = resultados[idx];
+        const r = filtrados[idx];
         if (!r) return;
         const ref = construirReferenciaDesdePaper(r);
         const cita = generarCitaAPABreve(ref);
@@ -103,7 +112,7 @@ function renderBuscadorPapers() {
       btn.addEventListener("click", () => {
         setEstado("Generando...", "estado-warn");
         const idx = parseInt(btn.getAttribute("data-send"), 10);
-        const r = resultados[idx];
+        const r = filtrados[idx];
         if (!r) return;
         const ref = construirReferenciaDesdePaper(r);
         const cita = generarCitaAPABreve(ref);
@@ -141,7 +150,22 @@ function renderBuscadorPapers() {
 
     setEstado("Generando...", "estado-warn");
     try {
-      const res = buscarPapersDemo(query);
+      let res = null;
+      try {
+        res = await buscarPapersCrossRef(query, 20);
+      } catch (e) {
+        res = null;
+      }
+      if (!res || !Array.isArray(res.resultados) || !res.resultados.length) {
+        try {
+          res = await buscarPapersSemanticScholarProxy(query, 20);
+        } catch (e) {
+          res = null;
+        }
+      }
+      if (!res || !Array.isArray(res.resultados)) {
+        res = buscarPapersDemo(query);
+      }
       const resultados = res.resultados || [];
       if (!window.CADState) window.CADState = {};
       window.CADState.buscadorPapers = { query, resultados, fuente: res.fuente };
