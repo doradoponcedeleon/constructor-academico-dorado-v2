@@ -16,6 +16,7 @@ function renderGaleriaFiguras(figuras, contenedor) {
       <p class="muted">${fig.descripcion || ""}</p>
       <p class="muted">Fuente: ${fig.fuente || ""}</p>
       <div class="button-row">
+        <button class="btn" data-insert-fig="${index}">Insertar en editor</button>
         <button class="btn btn-peligro" data-index="${index}">Eliminar</button>
       </div>
     `;
