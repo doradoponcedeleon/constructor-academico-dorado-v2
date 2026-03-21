@@ -42,7 +42,6 @@ function renderMarcoTeorico() {
         }
       }
       localStorage.setItem("marco_teorico", texto);
-      window.appendDocumentoEditor && window.appendDocumentoEditor(texto);
       renderPreview(texto);
       console.log("MARCO WORDS:", texto.split(/\s+/).filter(Boolean).length);
       console.log("QUALITY CHECK PASSED");
@@ -59,17 +58,12 @@ function renderMarcoTeorico() {
       return;
     }
     localStorage.setItem("documento_editor", window.appendDocumentoEditor ? window.appendDocumentoEditor(texto) : texto);
-    if (typeof window.sincronizarEditorConDocumentoBase === "function") {
-      window.sincronizarEditorConDocumentoBase(texto);
+    if (typeof window.actualizarEditorVisual === "function") {
+      window.actualizarEditorVisual();
       setEstado("Guardado correctamente", "estado-ok");
       return;
     }
-    if (typeof window.sincronizarEditorConPaper === "function") {
-      window.sincronizarEditorConPaper(texto);
-      setEstado("Guardado correctamente", "estado-ok");
-      return;
-    }
-    setEstado("Error", "estado-error");
+    setEstado("Guardado correctamente", "estado-ok");
   });
 
   const prev = localStorage.getItem("marco_teorico");
