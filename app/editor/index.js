@@ -48,10 +48,23 @@ function renderEditor() {
   const btnAgregar = cont.querySelector("#btnAgregarSeccion");
   const btnGuardar = cont.querySelector("#btnGuardarEditor");
   const btnLimpiar = cont.querySelector("#btnLimpiarEditor");
+  const btnVistaFinal = cont.querySelector("#btnVistaFinalEditor");
+  const previewFinal = cont.querySelector("#previewFinalEditor");
 
   if (btnAgregar) btnAgregar.addEventListener("click", agregarSeccionEditor);
   if (btnGuardar) btnGuardar.addEventListener("click", guardarEditorLocal);
   if (btnLimpiar) btnLimpiar.addEventListener("click", limpiarEditorLocal);
+  if (btnVistaFinal) {
+    btnVistaFinal.addEventListener("click", () => {
+      const texto = window.obtenerDocumentoFinalPlataforma
+        ? window.obtenerDocumentoFinalPlataforma()
+        : (localStorage.getItem("documento_editor") || localStorage.getItem("documento_base") || "");
+      const safe = String(texto || "").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+      if (previewFinal) {
+        previewFinal.innerHTML = safe ? `<pre>${safe}</pre>` : "<p class=\"muted\">Documento vacío</p>";
+      }
+    });
+  }
 
   cont.querySelectorAll("[data-action='subir']").forEach((btn) => {
     btn.addEventListener("click", () => {

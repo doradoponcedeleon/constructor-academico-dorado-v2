@@ -103,3 +103,35 @@ window.appendDocumentoEditor = function (texto) {
   localStorage.setItem("documento_editor", nuevo);
   return nuevo;
 };
+
+window.obtenerDocumentoFinalPlataforma = function () {
+  const secciones = window.CADState?.editor?.secciones || [];
+  const editorEl = document.getElementById("editor");
+  const editorBase = editorEl ? editorEl.value : (localStorage.getItem("documento_editor") || "");
+  let contenido = "";
+
+  if (typeof window.compilarDocumentoEditor === "function") {
+    contenido = window.compilarDocumentoEditor(editorBase, secciones);
+  } else {
+    contenido = editorBase || "";
+  }
+
+  if (!contenido) {
+    contenido = localStorage.getItem("documento_editor")
+      || localStorage.getItem("documento_base")
+      || "";
+  }
+
+  let citas = [];
+  try {
+    citas = JSON.parse(localStorage.getItem("citas_apa") || "[]");
+  } catch {
+    citas = [];
+  }
+  if (citas.length && !/##\s*Citas APA/i.test(contenido)) {
+    contenido += "\n\n## Citas APA\n\n" + citas.join("\n");
+  }
+
+  localStorage.setItem("documento_final", contenido);
+  return contenido;
+};

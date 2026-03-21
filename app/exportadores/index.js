@@ -26,6 +26,11 @@ function renderExportadores() {
         <button id="btnExpDrive" class="btn">Exportar a Google Drive</button>
       </div>
       <div id="driveStatus" class="card"></div>
+      <div class="card">
+        <h3>Vista final</h3>
+        <button id="btnVistaFinal" class="btn">Actualizar vista final</button>
+        <div id="previewFinal" class="card"></div>
+      </div>
     </div>
   `;
 
@@ -34,6 +39,17 @@ function renderExportadores() {
   cont.querySelector("#btnExpHTML").addEventListener("click", exportarHTMLPlataforma);
   cont.querySelector("#btnExpTXT").addEventListener("click", exportarTXTPlataforma);
   cont.querySelector("#btnExpJSON").addEventListener("click", exportarJSONPlataforma);
+
+  const preview = cont.querySelector("#previewFinal");
+  const renderPreview = () => {
+    const texto = window.obtenerDocumentoFinalPlataforma
+      ? window.obtenerDocumentoFinalPlataforma()
+      : (localStorage.getItem("documento_editor") || localStorage.getItem("documento_base") || "");
+    const safe = String(texto || "").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+    if (preview) preview.innerHTML = safe ? `<pre>${safe}</pre>` : "<p class=\"muted\">Documento vacío</p>";
+  };
+  cont.querySelector("#btnVistaFinal").addEventListener("click", renderPreview);
+  renderPreview();
 
   const status = cont.querySelector("#driveStatus");
   const setStatus = (msg) => { if (status) status.textContent = msg || ""; };

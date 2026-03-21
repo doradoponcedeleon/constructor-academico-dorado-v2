@@ -1,17 +1,16 @@
 function exportarHTMLPlataforma() {
   const state = window.CADState || {};
   const meta = state.metadata || {};
-  const secciones = state.editor?.secciones || [];
   const referencias = state.referencias || [];
   const figuras = state.figuras || [];
   const tablas = state.tablas || [];
+  const contenido = window.obtenerDocumentoFinalPlataforma
+    ? window.obtenerDocumentoFinalPlataforma()
+    : (localStorage.getItem("documento_editor") || localStorage.getItem("documento_base") || "");
 
-  const seccionesHTML = secciones.map((s) => `
-    <section>
-      <h2>${s.titulo || "Sección"}</h2>
-      <p>${(s.contenido || "").replace(/\n/g, "<br/>")}</p>
-    </section>
-  `).join("");
+  const seccionesHTML = contenido
+    ? `<section><h2>Documento</h2><pre>${contenido.replace(/</g, "&lt;").replace(/>/g, "&gt;")}</pre></section>`
+    : "";
 
   const referenciasHTML = referencias.length
     ? `<h2>Referencias</h2><ul>${referencias.map((r) => `

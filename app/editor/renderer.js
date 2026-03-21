@@ -18,6 +18,11 @@ PEditor.renderer = {
         <h3>Documento base</h3>
         <textarea id="editor" class="textarea" placeholder="Contenido generado"></textarea>
       </div>
+      <div class="card">
+        <h3>Vista final</h3>
+        <button id="btnVistaFinalEditor" class="btn">Actualizar vista final</button>
+        <div id="previewFinalEditor" class="card"></div>
+      </div>
       <div id="seccionesEditor" class="editor-list"></div>
     `;
 

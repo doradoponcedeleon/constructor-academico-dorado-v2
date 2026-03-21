@@ -50,7 +50,11 @@
   }
 
   function getDocumentoActual() {
+    if (typeof window.obtenerDocumentoFinalPlataforma === "function") {
+      return window.obtenerDocumentoFinalPlataforma();
+    }
     return localStorage.getItem("documento_final")
+      || localStorage.getItem("documento_editor")
       || localStorage.getItem("documento_base")
       || "";
   }
@@ -112,7 +116,11 @@
       if (onStatus) onStatus("Archivo subido correctamente");
       return file;
     } catch (err) {
-      if (onStatus) onStatus("Error al exportar");
+      if (onStatus && String(err?.message || "").includes("clientId")) {
+        onStatus("Config Google Drive incompleta: falta clientId");
+      } else if (onStatus) {
+        onStatus("Error al exportar");
+      }
       throw err;
     }
   };

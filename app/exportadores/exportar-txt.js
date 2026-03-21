@@ -1,10 +1,12 @@
 function exportarTXTPlataforma() {
   const state = window.CADState || {};
   const meta = state.metadata || {};
-  const secciones = state.editor?.secciones || [];
   const referencias = state.referencias || [];
   const figuras = state.figuras || [];
   const tablas = state.tablas || [];
+  const contenido = window.obtenerDocumentoFinalPlataforma
+    ? window.obtenerDocumentoFinalPlataforma()
+    : (localStorage.getItem("documento_editor") || localStorage.getItem("documento_base") || "");
 
   const lines = [];
   lines.push(`=== DOCUMENTO ACADEMICO ===`);
@@ -14,16 +16,9 @@ function exportarTXTPlataforma() {
   lines.push(`Tipo: ${meta.tipo || "-"}`);
   lines.push("");
 
-  lines.push("=== SECCIONES ===");
-  if (!secciones.length) {
-    lines.push("No hay secciones.");
-  } else {
-    secciones.forEach((s, i) => {
-      lines.push(`${i + 1}. ${s.titulo || "Sección"}`);
-      lines.push(s.contenido || "");
-      lines.push("");
-    });
-  }
+  lines.push("=== DOCUMENTO ===");
+  lines.push(contenido || "No hay contenido.");
+  lines.push("");
 
   lines.push("=== FIGURAS ===");
   if (!figuras.length) {

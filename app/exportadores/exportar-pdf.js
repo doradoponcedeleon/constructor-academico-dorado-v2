@@ -1,7 +1,9 @@
 function exportarPDFPlataforma() {
   const state = window.CADState || {};
-  const secciones = state.editor?.secciones || [];
   const titulo = state.metadata?.titulo || "Documento académico";
+  const contenido = window.obtenerDocumentoFinalPlataforma
+    ? window.obtenerDocumentoFinalPlataforma()
+    : (localStorage.getItem("documento_editor") || "");
 
   if (!window.jspdf || !window.jspdf.jsPDF) {
     alert("jsPDF no está disponible.");
@@ -18,22 +20,12 @@ function exportarPDFPlataforma() {
   doc.text("Generado: " + new Date().toLocaleDateString(), 14, y + 6);
   y += 12;
 
-  doc.setFontSize(12);
-  secciones.forEach((sec) => {
-    if (y > 260) { doc.addPage(); y = 20; }
-    const heading = sec.titulo || "Sección";
-    doc.setFontSize(14);
-    doc.text(heading, 14, y);
-    y += 6;
-
-    doc.setFontSize(11);
-    const lines = doc.splitTextToSize(sec.contenido || "", 170);
-    lines.forEach((line) => {
-      if (y > 270) { doc.addPage(); y = 20; }
-      doc.text(line, 14, y);
-      y += 5;
-    });
-    y += 6;
+  doc.setFontSize(11);
+  const lines = doc.splitTextToSize(contenido || "", 170);
+  lines.forEach((line) => {
+    if (y > 270) { doc.addPage(); y = 20; }
+    doc.text(line, 14, y);
+    y += 5;
   });
 
   doc.save("paper-academico.pdf");
