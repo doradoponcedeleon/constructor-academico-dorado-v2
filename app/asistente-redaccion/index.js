@@ -137,10 +137,10 @@ function renderAsistenteRedaccion() {
   };
 
   cont.querySelector("#btnMejorar").addEventListener("click", () => setSalida(mejorarConReferencias(texto.value), "Texto mejorado"));
-  cont.querySelector("#btnResumir").addEventListener("click", () => setSalida(resumirTextoLocal(texto.value), "Resumen generado"));
-  cont.querySelector("#btnAmpliar").addEventListener("click", () => setSalida(ampliarTextoLocal(texto.value), "Texto ampliado"));
-  cont.querySelector("#btnFormalizar").addEventListener("click", () => setSalida(formalizarTextoLocal(texto.value), "Texto formalizado"));
-  cont.querySelector("#btnConclusion").addEventListener("click", () => setSalida(generarConclusionLocal(texto.value), "Conclusión generada"));
+  cont.querySelector("#btnResumir").addEventListener("click", () => setSalida(aplicarReferenciasEnTexto(resumirTextoLocal(texto.value)), "Resumen generado"));
+  cont.querySelector("#btnAmpliar").addEventListener("click", () => setSalida(aplicarReferenciasEnTexto(ampliarTextoLocal(texto.value)), "Texto ampliado"));
+  cont.querySelector("#btnFormalizar").addEventListener("click", () => setSalida(aplicarReferenciasEnTexto(formalizarTextoLocal(texto.value)), "Texto formalizado"));
+  cont.querySelector("#btnConclusion").addEventListener("click", () => setSalida(aplicarReferenciasEnTexto(generarConclusionLocal(texto.value)), "Conclusión generada"));
 
   cont.querySelector("#btnAplicarRedaccion").addEventListener("click", () => {
     const idx = parseInt(select.value, 10);
