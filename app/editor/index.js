@@ -25,9 +25,6 @@ function renderEditor() {
   if (!docEditor && !legacySecciones.length) {
     window.CADState.editor.secciones = [];
   }
-  if (docEditor) {
-    window.CADState.editor.secciones = [];
-  }
   PEditor.sections.lista = window.CADState.editor.secciones;
 
   PEditor.renderer.render(cont, PEditor.sections.lista);
