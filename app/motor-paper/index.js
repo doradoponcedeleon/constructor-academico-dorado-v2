@@ -203,17 +203,12 @@ function renderMotorPaper() {
     } catch (e) {
       secciones = [];
     }
-    if (typeof window.sincronizarEditorConPaper === "function") {
-      window.sincronizarEditorConPaper(paper, secciones);
+    if (typeof window.actualizarEditorVisual === "function") {
+      window.actualizarEditorVisual();
       setEstado("Contenido del paper integrado al editor");
       return;
     }
-    if (typeof window.sincronizarEditorConDocumentoBase === "function") {
-      window.sincronizarEditorConDocumentoBase(paper);
-      setEstado("Contenido del paper integrado al editor");
-      return;
-    }
-    setEstado("Error");
+    setEstado("Contenido del paper integrado al editor");
   });
 
   cont.querySelector("#btnLimpiarPaper").addEventListener("click", () => {

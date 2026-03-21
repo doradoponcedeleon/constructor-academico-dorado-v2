@@ -177,7 +177,18 @@ function aplicarEditor() {
     console.log("APPLIED TO EDITOR");
     localStorage.setItem("documento_editor", doc);
     localStorage.setItem("documento_base", doc);
-    sincronizarEditorConDocumentoBase(doc);
+    if (window.CADState?.editor) {
+      window.CADState.editor.secciones = [];
+    }
+    if (window.PEditor) {
+      PEditor.sections.lista = [];
+    }
+    if (window.CADCore?.storage?.guardarEstadoLocal) {
+      CADCore.storage.guardarEstadoLocal(window.CADState);
+    }
+    if (typeof window.actualizarEditorVisual === "function") {
+      window.actualizarEditorVisual();
+    }
     mostrarEstadoMotorIdeas("Documento aplicado al editor");
   } catch (e) {
     mostrarEstadoMotorIdeas("Error al generar");
