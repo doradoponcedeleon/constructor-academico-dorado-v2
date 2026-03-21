@@ -26,14 +26,15 @@
 
   root._resolveSrc = function _resolveSrc(mod, file) {
     if (!file) return "";
+    const build = window.CAD_BUILD ? `?v=${window.CAD_BUILD}` : "";
     if (file.startsWith("http://") || file.startsWith("https://") || file.startsWith("/")) {
-      return file;
+      return file + build;
     }
     if (mod && mod.basePath) {
       const base = mod.basePath.replace(/\/$/, "");
-      return `${base}/${file}`;
+      return `${base}/${file}${build}`;
     }
-    return file;
+    return file + build;
   };
 
   root._cargarScript = function _cargarScript(src) {
