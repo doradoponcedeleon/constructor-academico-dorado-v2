@@ -59,9 +59,11 @@ function renderEditor() {
       const texto = window.obtenerDocumentoFinalPlataforma
         ? window.obtenerDocumentoFinalPlataforma()
         : (localStorage.getItem("documento_editor") || localStorage.getItem("documento_base") || "");
-      const safe = String(texto || "").replace(/</g, "&lt;").replace(/>/g, "&gt;");
       if (previewFinal) {
-        previewFinal.innerHTML = safe ? `<pre>${safe}</pre>` : "<p class=\"muted\">Documento vacío</p>";
+        const html = window.renderDocumentoPreviewHTML
+          ? window.renderDocumentoPreviewHTML(texto)
+          : String(texto || "").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+        previewFinal.innerHTML = html ? `<div>${html}</div>` : "<p class=\"muted\">Documento vacío</p>";
       }
     });
   }

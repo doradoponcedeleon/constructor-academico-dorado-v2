@@ -135,3 +135,14 @@ window.obtenerDocumentoFinalPlataforma = function () {
   localStorage.setItem("documento_final", contenido);
   return contenido;
 };
+
+window.renderDocumentoPreviewHTML = function (texto) {
+  const raw = String(texto || "");
+  const safe = raw.replace(/</g, "&lt;").replace(/>/g, "&gt;");
+  const withImgs = safe.replace(/!\[([^\]]*)\]\(([^)]+)\)/g, (_m, alt, src) => {
+    const cleanAlt = String(alt || "").replace(/"/g, "&quot;");
+    const cleanSrc = String(src || "").replace(/"/g, "&quot;");
+    return `<img src="${cleanSrc}" alt="${cleanAlt}" style="max-width:100%;border-radius:8px;margin:8px 0;" />`;
+  });
+  return withImgs.replace(/\n/g, "<br/>");
+};
