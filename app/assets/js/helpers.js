@@ -101,12 +101,30 @@ window.appendDocumentoEditor = function (texto) {
   const actual = localStorage.getItem("documento_editor") || "";
   const nuevoTexto = String(texto || "").trim();
   if (!nuevoTexto) return actual;
+
+  const hash = window.CADCore?.utils?.hashString
+    ? CADCore.utils.hashString(nuevoTexto)
+    : String(nuevoTexto).slice(0, 200);
+
+  let hashes = [];
+  try {
+    hashes = JSON.parse(localStorage.getItem("documento_append_hashes") || "[]");
+  } catch {
+    hashes = [];
+  }
+  if (hashes.includes(hash)) return actual;
+
   const lineaTitulo = nuevoTexto.split("\n").map((l) => l.trim()).find((l) => l.startsWith("#"));
   if (lineaTitulo && actual.includes(lineaTitulo)) {
+    hashes.push(hash);
+    localStorage.setItem("documento_append_hashes", JSON.stringify(hashes));
     return actual;
   }
+
   const nuevo = [actual.trim(), nuevoTexto].filter(Boolean).join("\n\n");
   localStorage.setItem("documento_editor", nuevo);
+  hashes.push(hash);
+  localStorage.setItem("documento_append_hashes", JSON.stringify(hashes));
   return nuevo;
 };
 
