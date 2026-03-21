@@ -99,7 +99,13 @@ window.compilarDocumentoEditor = function (editorValor, secciones) {
 
 window.appendDocumentoEditor = function (texto) {
   const actual = localStorage.getItem("documento_editor") || "";
-  const nuevo = [actual.trim(), String(texto || "").trim()].filter(Boolean).join("\n\n");
+  const nuevoTexto = String(texto || "").trim();
+  if (!nuevoTexto) return actual;
+  const lineaTitulo = nuevoTexto.split("\n").map((l) => l.trim()).find((l) => l.startsWith("#"));
+  if (lineaTitulo && actual.includes(lineaTitulo)) {
+    return actual;
+  }
+  const nuevo = [actual.trim(), nuevoTexto].filter(Boolean).join("\n\n");
   localStorage.setItem("documento_editor", nuevo);
   return nuevo;
 };
