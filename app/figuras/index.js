@@ -14,19 +14,28 @@ function guardarFigurasPlataforma(lista) {
 }
 
 function construirBloqueFigura(fig) {
+  const id = fig.id || `fig_${Date.now().toString(36)}`;
   const titulo = fig.titulo || "Figura";
   const descripcion = fig.descripcion || "";
   const fuente = fig.fuente || "";
-  const img = fig.imagen || "";
   return [
     `### Figura: ${titulo}`,
-    img ? `![${titulo}](${img})` : "",
+    `[[FIGURA:${id}]]`,
     descripcion ? `*Descripción:* ${descripcion}` : "",
     fuente ? `*Fuente:* ${fuente}` : ""
   ].filter(Boolean).join("\n\n");
 }
 
 function insertarFiguraEnDocumento(fig, destino, posicion) {
+  if (!fig.id) {
+    fig.id = `fig_${Date.now().toString(36)}_${Math.random().toString(36).slice(2, 6)}`;
+    const lista = obtenerFigurasPlataforma();
+    const idx = lista.findIndex((f) => f === fig || (f.imagen && f.imagen === fig.imagen));
+    if (idx >= 0) {
+      lista[idx] = { ...lista[idx], id: fig.id };
+      guardarFigurasPlataforma(lista);
+    }
+  }
   const bloque = construirBloqueFigura(fig);
   if (!bloque) return false;
 
@@ -74,7 +83,8 @@ function agregarFiguraPlataforma() {
 
   leerImagenFigura(archivo, (dataUrl) => {
     const lista = obtenerFigurasPlataforma();
-    lista.unshift({ titulo, descripcion, fuente, imagen: dataUrl });
+    const id = `fig_${Date.now().toString(36)}_${Math.random().toString(36).slice(2, 6)}`;
+    lista.unshift({ id, titulo, descripcion, fuente, imagen: dataUrl });
     guardarFigurasPlataforma(lista);
     renderFiguras();
 

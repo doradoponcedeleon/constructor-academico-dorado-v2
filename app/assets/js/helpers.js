@@ -132,12 +132,19 @@ window.obtenerDocumentoFinalPlataforma = function () {
     contenido += "\n\n## Citas APA\n\n" + citas.join("\n");
   }
 
+  if (typeof window.expandirFigurasEnDocumento === "function") {
+    contenido = window.expandirFigurasEnDocumento(contenido);
+  }
+
   localStorage.setItem("documento_final", contenido);
   return contenido;
 };
 
 window.renderDocumentoPreviewHTML = function (texto) {
-  const raw = String(texto || "");
+  const expanded = typeof window.expandirFigurasEnDocumento === "function"
+    ? window.expandirFigurasEnDocumento(texto)
+    : texto;
+  const raw = String(expanded || "");
   const safe = raw.replace(/</g, "&lt;").replace(/>/g, "&gt;");
   const withImgs = safe.replace(/!\[([^\]]*)\]\(([^)]+)\)/g, (_m, alt, src) => {
     const cleanAlt = String(alt || "").replace(/"/g, "&quot;");
@@ -145,4 +152,16 @@ window.renderDocumentoPreviewHTML = function (texto) {
     return `<img src="${cleanSrc}" alt="${cleanAlt}" style="max-width:100%;border-radius:8px;margin:8px 0;" />`;
   });
   return withImgs.replace(/\n/g, "<br/>");
+};
+
+window.expandirFigurasEnDocumento = function (texto) {
+  const raw = String(texto || "");
+  const figuras = Array.isArray(window.CADState?.figuras) ? window.CADState.figuras : [];
+  if (!figuras.length || !raw.includes("[[FIGURA:")) return raw;
+  return raw.replace(/\[\[FIGURA:([^\]]+)\]\]/g, (_m, id) => {
+    const fig = figuras.find((f) => f.id === id);
+    if (!fig || !fig.imagen) return "";
+    const titulo = fig.titulo || "Figura";
+    return `![${titulo}](${fig.imagen})`;
+  });
 };
