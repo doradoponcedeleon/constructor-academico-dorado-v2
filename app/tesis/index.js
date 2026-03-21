@@ -4,6 +4,12 @@ function extraerBloqueMarkdown(texto, titulo) {
   return match ? match[1].trim() : "";
 }
 
+function quitarSeccionMarkdown(texto, titulo) {
+  if (!texto) return "";
+  const regex = new RegExp(`##\\s*${titulo}\\s*\\n[\\s\\S]*?(?=\\n##\\s*|$)`, "i");
+  return String(texto).replace(regex, "").trim();
+}
+
 function renderTesis() {
   const cont = document.getElementById("panelContenido");
   if (!cont) return;
@@ -96,6 +102,13 @@ function renderTesis() {
         ? citas.join("\n")
         : "Citas APA no disponibles";
 
+      let desarrollo = editorDoc || "";
+      if (marco) {
+        desarrollo = quitarSeccionMarkdown(desarrollo, "Marco Teórico");
+      }
+      desarrollo = quitarSeccionMarkdown(desarrollo, "Referencias");
+      desarrollo = quitarSeccionMarkdown(desarrollo, "Citas APA");
+
       const contenido = [
         "# Tesis completa",
         "## Tema",
@@ -109,7 +122,7 @@ function renderTesis() {
         "## Marco Teórico",
         marco || "Marco teórico no disponible",
         "## Desarrollo",
-        editorDoc || "Desarrollo no disponible",
+        desarrollo || "Desarrollo no disponible",
         "## Referencias",
         referenciasTxt,
         "## Citas APA",
