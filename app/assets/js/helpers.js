@@ -135,21 +135,42 @@ window.obtenerDocumentoFinalPlataforma = function () {
   if (typeof window.expandirFigurasEnDocumento === "function") {
     contenido = window.expandirFigurasEnDocumento(contenido);
   }
+  if (typeof window.expandirTablasEnDocumento === "function") {
+    contenido = window.expandirTablasEnDocumento(contenido);
+  }
 
   localStorage.setItem("documento_final", contenido);
   return contenido;
 };
 
 window.renderDocumentoPreviewHTML = function (texto) {
-  const expanded = typeof window.expandirFigurasEnDocumento === "function"
-    ? window.expandirFigurasEnDocumento(texto)
-    : texto;
+  let expanded = texto;
+  if (typeof window.expandirFigurasEnDocumento === "function") {
+    expanded = window.expandirFigurasEnDocumento(expanded);
+  }
+  if (typeof window.expandirTablasEnDocumento === "function") {
+    expanded = window.expandirTablasEnDocumento(expanded);
+  }
   const raw = String(expanded || "");
   const safe = raw.replace(/</g, "&lt;").replace(/>/g, "&gt;");
-  const withImgs = safe.replace(/!\[([^\]]*)\]\(([^)]+)\)/g, (_m, alt, src) => {
+  let withImgs = safe.replace(/!\[([^\]]*)\]\(([^)]+)\)/g, (_m, alt, src) => {
     const cleanAlt = String(alt || "").replace(/"/g, "&quot;");
     const cleanSrc = String(src || "").replace(/"/g, "&quot;");
     return `<img src="${cleanSrc}" alt="${cleanAlt}" style="max-width:100%;border-radius:8px;margin:8px 0;" />`;
+  });
+  withImgs = withImgs.replace(/(\|.+\|\n\|[ -:|]+\|\n(?:\|.*\|\n?)*)/g, (m) => {
+    const lines = m.trim().split("\n");
+    if (lines.length < 2) return m;
+    const rows = lines.map((line) => line.split("|").slice(1, -1).map((c) => c.trim()));
+    const header = rows[0];
+    const body = rows.slice(2);
+    const table = [
+      "<table style=\"width:100%;border-collapse:collapse;margin:8px 0;\">",
+      "<thead><tr>" + header.map((h) => `<th style="border:1px solid #ccc;padding:6px;text-align:left;">${h}</th>`).join("") + "</tr></thead>",
+      "<tbody>" + body.map((r) => "<tr>" + r.map((c) => `<td style="border:1px solid #ccc;padding:6px;">${c}</td>`).join("") + "</tr>").join("") + "</tbody>",
+      "</table>"
+    ].join("");
+    return table;
   });
   return withImgs.replace(/\n/g, "<br/>");
 };
@@ -163,5 +184,26 @@ window.expandirFigurasEnDocumento = function (texto) {
     if (!fig || !fig.imagen) return "";
     const titulo = fig.titulo || "Figura";
     return `![${titulo}](${fig.imagen})`;
+  });
+};
+
+window.expandirTablasEnDocumento = function (texto) {
+  const raw = String(texto || "");
+  const tablas = Array.isArray(window.CADState?.tablas) ? window.CADState.tablas : [];
+  if (!tablas.length || !raw.includes("[[TABLA:")) return raw;
+  return raw.replace(/\[\[TABLA:([^\]]+)\]\]/g, (_m, id) => {
+    const tabla = tablas.find((t) => t.id === id);
+    if (!tabla) return "";
+    const filas = Array.isArray(tabla.datos) ? tabla.datos : [];
+    if (!filas.length) return "";
+    const header = filas[0] || [];
+    const separator = header.map(() => "---");
+    const body = filas.slice(1);
+    const lines = [
+      `| ${header.join(" | ")} |`,
+      `| ${separator.join(" | ")} |`,
+      ...body.map((r) => `| ${r.join(" | ")} |`)
+    ];
+    return lines.join("\n");
   });
 };
